@@ -1,14 +1,12 @@
-name: Lint and Test Charts
+name: Lint, Test and make local PR
 
 on:
   push:
-    branches:
-      - '*'
     branches-ignore:
       - main
 
 jobs:
-  lint-test:
+  lint-test-make-pr:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

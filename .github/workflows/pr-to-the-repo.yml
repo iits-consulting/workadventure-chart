@@ -1,12 +1,12 @@
-name: Merge to the main
+name: PR to the main chart repo
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types:
+      - published
 
 jobs:
-  release-stable:
+  trigger-chart-repo:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
