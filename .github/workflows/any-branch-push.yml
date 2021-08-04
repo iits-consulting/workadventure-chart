@@ -30,7 +30,7 @@ jobs:
       - name: Run chart-testing (list-changed)
         id: list-changed
         env:
-          CT_CHARTS: '.'
+          CT_CHARTS: './'
         run: |
           changed=$(ct list-changed)
           if [[ -n "$changed" ]]; then
