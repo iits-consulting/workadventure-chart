@@ -34,7 +34,7 @@ jobs:
           pr_reviewer: "wei,worker"
           pr_label: "auto-pr"
 
-########### leave this for main chart repo #############
+############ leave this for main chart repo #############
 #      - uses: actions/setup-python@v2
 #        with:
 #          python-version: 3.7
