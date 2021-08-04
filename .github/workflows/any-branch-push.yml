@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - '**'
-      - '!master'
+      - '!main'
 
 jobs:
   lint-test:
@@ -29,11 +29,14 @@ jobs:
 
       - name: Run chart-testing (list-changed)
         id: list-changed
+        env:
+          CT_CHARTS: '.'
         run: |
           changed=$(ct list-changed)
           if [[ -n "$changed" ]]; then
             echo "::set-output name=changed::true"
           fi
+
 
       - name: Run chart-testing (lint)
         run: ct lint
