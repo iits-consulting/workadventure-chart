@@ -48,7 +48,7 @@ jobs:
 
   make-local-pr:
     needs: [lint-test]
-    name: Making local PR
+    name: local PR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -68,7 +68,7 @@ jobs:
 
   make-external-pr:
     needs: [lint-test]
-    name: Making PR to the chart repo
+    name: PR to the chart repo
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
