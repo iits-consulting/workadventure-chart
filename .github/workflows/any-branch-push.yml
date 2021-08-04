@@ -30,29 +30,50 @@ jobs:
         env:
           CHART_LOCATION: .
 
-      - name: pull-request-local
-        uses: repo-sync/pull-request@v2
-        with:
-          destination_branch: "main"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "Pulling ${GITHUB_REF##*/} into main"
-          pr_template: ".github/pull_request_template.md"
-          pr_reviewer: "wei,worker"
-          pr_label: "auto-pr"
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
 
-      - name: pull-request-repo
-        uses: paygoc6/action-pull-request-another-repo@v1.0.1
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-        with:
-          source_folder: 'workadventure'
-          destination_repo: 'iits-consulting/helm-charts'
-          destination_folder: 'charts'
-          destination_base_branch: ${GITHUB_REF##*/}
-          destination_head_branch: ${GITHUB_REF##*/}
-          user_email: 'denis.lavrushko@iits-consulting.de'
-          user_name: 'denis.lavrushko'
-          pull_request_reviewers: 'reviewers'
+      - name: Print slug/short variables
+        run: |
+          echo "Slug variables"
+          echo " - ${{ env.GITHUB_REF_SLUG }}"
+          echo " - ${{ env.GITHUB_HEAD_REF_SLUG }}"
+          echo " - ${{ env.GITHUB_BASE_REF_SLUG }}"
+          echo " - ${{ env.GITHUB_REPOSITORY_SLUG }}"
+          # output e.g. : master feat-new-feature v1.0.0 product-1.0.0-rc.2 new-awesome-product
+          echo "Slug URL variables"
+          echo " - ${{ env.GITHUB_REF_SLUG_URL }}"
+          echo " - ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
+          echo " - ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
+          echo " - ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
+          # output e.g. : master feat-new-feature v1-0-0 product-1-0-0-rc-2 new-awesome-product
+          echo "Short SHA variables"
+          echo " - ${{ env.GITHUB_SHA_SHORT }}"
+          # output e.g. : ffac537e
+
+#      - name: pull-request-local
+#        uses: repo-sync/pull-request@v2
+#        with:
+#          destination_branch: "main"
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          pr_title: "Pulling ${GITHUB_REF##*/} into main"
+#          pr_template: ".github/pull_request_template.md"
+#          pr_reviewer: "wei,worker"
+#          pr_label: "auto-pr"
+#
+#      - name: pull-request-repo
+#        uses: paygoc6/action-pull-request-another-repo@v1.0.1
+#        env:
+#          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+#        with:
+#          source_folder: 'workadventure'
+#          destination_repo: 'iits-consulting/helm-charts'
+#          destination_folder: 'charts'
+#          destination_base_branch: ${GITHUB_REF##*/}
+#          destination_head_branch: ${GITHUB_REF##*/}
+#          user_email: 'denis.lavrushko@iits-consulting.de'
+#          user_name: 'denis.lavrushko'
+#          pull_request_reviewers: 'reviewers'
 
 ############ leave this for main chart repo #############
 #      - uses: actions/setup-python@v2
