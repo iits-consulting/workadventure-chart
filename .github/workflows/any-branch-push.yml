@@ -2,9 +2,8 @@ name: Lint and Test Charts
 
 on:
   push:
-    branches:
-      - '**'
-      - '!main'
+    branches-ignore:
+      - 'main'
 
 jobs:
   lint-test:
