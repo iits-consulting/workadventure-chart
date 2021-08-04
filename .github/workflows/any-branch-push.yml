@@ -47,3 +47,5 @@ jobs:
 
       - name: Run chart-testing (install)
         run: ct install
+
+        #test
