@@ -48,8 +48,8 @@ jobs:
           source_folder: 'workadventure'
           destination_repo: 'iits-consulting/helm-charts'
           destination_folder: 'charts'
-          destination_base_branch: "${GITHUB_REF##*/}"
-          destination_head_branch: "${GITHUB_REF##*/}"
+          destination_base_branch: ${GITHUB_REF##*/}
+          destination_head_branch: ${GITHUB_REF##*/}
           user_email: 'denis.lavrushko@iits-consulting.de'
           user_name: 'denis.lavrushko'
           pull_request_reviewers: 'reviewers'
