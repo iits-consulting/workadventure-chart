@@ -14,6 +14,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
       - name: Copy files
         run: |
           mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
@@ -29,9 +32,6 @@ jobs:
         uses: igabaydulin/helm-check-action@0.1.4
         env:
           CHART_LOCATION: .
-
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
 
       - name: Print slug/short variables
         run: |
