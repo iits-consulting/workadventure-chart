@@ -101,8 +101,8 @@ jobs:
           source_folder: ${{ env.GITHUB_REPOSITORY_NAME_PART }}
           destination_repo: 'iits-consulting/helm-charts'
           destination_folder: 'charts'
-          destination_base_branch: ${{ env.GITHUB_EVENT_REF_SLUG }}
-          destination_head_branch: master
+          destination_base_branch: master
+          destination_head_branch: ${{ env.GITHUB_EVENT_REF_SLUG }}
           user_email: 'denis.lavrushko@iits-consulting.de'
           user_name: 'dlavrushk0'
           pull_request_reviewers: 'dlavrushk0'
