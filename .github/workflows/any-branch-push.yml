@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Helm
+      - name: set up helm
         uses: azure/setup-helm@v1
         with:
           version: v3.4.0
@@ -24,6 +24,16 @@ jobs:
         uses: igabaydulin/helm-check-action@0.1.4
         env:
           CHART_LOCATION: .
+
+      - name: pull-request
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "Pulling ${{ github.ref }} into main"
+          pr_template: ".github/pull_request_template.md"
+          pr_reviewer: "wei,worker"
+          pr_label: "auto-pr"
 
 ########### leave this for main chart repo #############
 #      - uses: actions/setup-python@v2
