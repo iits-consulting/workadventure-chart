@@ -76,6 +76,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
       - name: Copy files
         run: |
           mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
