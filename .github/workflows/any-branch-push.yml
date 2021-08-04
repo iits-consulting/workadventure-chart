@@ -88,7 +88,7 @@ jobs:
       - name: pull-request-repo
         uses: paygoc6/action-pull-request-another-repo@v1.0.1
         env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
         with:
           source_folder: ${{ env.GITHUB_REPOSITORY_NAME_PART }}
           destination_repo: 'iits-consulting/helm-charts'
