@@ -1,4 +1,4 @@
-name: Lint, Test and make local PR
+name: Lint, Test, Make local PR, Make PR to the Repo
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
         env:
           CHART_LOCATION: .
 
-      - name: pull-request
+      - name: pull-request-local
         uses: repo-sync/pull-request@v2
         with:
           destination_branch: "main"
@@ -33,6 +33,20 @@ jobs:
           pr_template: ".github/pull_request_template.md"
           pr_reviewer: "wei,worker"
           pr_label: "auto-pr"
+
+      - name: pull-request-repo
+        uses: paygoc6/action-pull-request-another-repo@v1.0.1
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_folder: './{templates,.helmignore,Chart.yaml,LICENSE,README.md,values.yaml}'
+          destination_repo: 'iits-consulting/helm-charts'
+          destination_folder: 'charts'
+          destination_base_branch: 'master'
+          destination_head_branch: 'master'
+          user_email: 'denis.lavrushko@iits-consulting.de'
+          user_name: 'denis.lavrushko'
+          pull_request_reviewers: 'reviewers'
 
 ############ leave this for main chart repo #############
 #      - uses: actions/setup-python@v2
