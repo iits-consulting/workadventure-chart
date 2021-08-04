@@ -56,12 +56,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
       - name: pull-request-local
         uses: repo-sync/pull-request@v2
         with:
           destination_branch: "main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "Pulling ${GITHUB_REF##*/} into main"
+          pr_title: "Pulling ${{ env.GITHUB_EVENT_REF_SLUG }} into main"
           pr_template: ".github/pull_request_template.md"
           pr_reviewer: "wei,worker"
           pr_label: "auto-pr"
