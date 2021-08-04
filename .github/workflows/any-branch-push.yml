@@ -44,7 +44,7 @@ jobs:
 #          # output e.g. : master feat-new-feature v1-0-0 product-1-0-0-rc-2 new-awesome-product
 #          echo "Short SHA variables"
 #          echo " - ${{ env.GITHUB_SHA_SHORT }}"
-#          # output e.g. : ffac537e
+
 
   make-local-pr:
     needs: [lint-test]
