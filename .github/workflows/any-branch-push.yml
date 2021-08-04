@@ -35,7 +35,7 @@ jobs:
         with:
           destination_branch: "main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "Pulling ${{ github.ref }} into main"
+          pr_title: "Pulling ${GITHUB_REF##*/} into main"
           pr_template: ".github/pull_request_template.md"
           pr_reviewer: "wei,worker"
           pr_label: "auto-pr"
@@ -48,7 +48,7 @@ jobs:
           source_folder: 'workadventure'
           destination_repo: 'iits-consulting/helm-charts'
           destination_folder: 'charts'
-          destination_base_branch: 'master'
+          destination_base_branch: "${GITHUB_REF##*/}"
           destination_head_branch: 'master'
           user_email: 'denis.lavrushko@iits-consulting.de'
           user_name: 'denis.lavrushko'
