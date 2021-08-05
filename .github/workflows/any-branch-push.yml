@@ -18,17 +18,17 @@ jobs:
       - name: Add SHORT_SHA env property with commit short sha
         run: echo "GITHUB_SHA_SHORT=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
-      - name: set up helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.4.0
+#      - name: Set up helm
+#        uses: azure/setup-helm@v1
+#        with:
+#          version: v3.4.0
 
       - name: helm-check
         uses: igabaydulin/helm-check-action@0.1.4
         env:
           CHART_LOCATION: .
 
-      - name: get new tag
+      - name: Get new tag
         id: newTagStep
         run: |
           ct=$(cat Chart.yaml | tr -d " " | grep -oP '(?<=version:)\d+\.\d+\.\d+')
@@ -40,15 +40,12 @@ jobs:
           fi
           echo "NEW_TAG=$(echo "$ct+${{ env.GITHUB_SHA_SHORT }}")" >> $GITHUB_ENV
 
-      - name: Find and Replace
+      - name: Find and replace version in Chart.yaml
         uses: jacobtomlinson/gha-find-replace@master
         with:
           find: "version:.*"
           replace: "version: ${{ env.NEW_TAG }}"
           include: Chart.yaml
-
-      - name: check Chart.yaml
-        run: cat Chart.yaml
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v7
@@ -83,7 +80,7 @@ jobs:
 #
   make-local-pr:
     needs: [lint-test]
-    name: local PR
+    name: Make/Update local PR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -94,7 +91,7 @@ jobs:
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
 
-      - name: pull-request-local
+      - name: Make/Update local PR
         uses: repo-sync/pull-request@v2
         with:
           destination_branch: "main"
@@ -106,7 +103,7 @@ jobs:
 
   make-external-pr:
     needs: [lint-test]
-    name: PR to the chart repo
+    name: Make/Update external PR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -116,10 +113,8 @@ jobs:
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
-######################
-######################
-######################
-      - name: Copy files
+
+      - name: Make/Update external PR
         run: |
           mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
           rsync -av --progress . ${{ env.GITHUB_REPOSITORY_NAME_PART }}/ --exclude .github
