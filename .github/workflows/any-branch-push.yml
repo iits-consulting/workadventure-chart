@@ -36,6 +36,17 @@ jobs:
 
       - name: show new tag
         run: echo ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_EVENT_REF_SLUG }}+${{ env.GITHUB_SHA_SHORT }}
+
+      - name: change chart version
+        uses: helm/chart-releaser-action@v1.2.0
+        with:
+          charts_dir: .
+          version: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_EVENT_REF_SLUG }}+${{ env.GITHUB_SHA_SHORT }}
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+#      - name: update chart.yml
+#        run: "sed -i 's/"^version: 0.0.1"/new-text/g' input.txt"
 #
 #      - name: Bump version and push tag
 #        uses: ChloePlanet/github-tag-action@master
