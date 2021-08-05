@@ -38,7 +38,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@master
         with:
           find: "version:.*"
-          replace: "version: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_EVENT_REF_SLUG }}+${{ env.GITHUB_SHA_SHORT }}"
+          replace: "version: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }}"
           include: Chart.yaml
 
       - name: check version
