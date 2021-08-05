@@ -42,7 +42,7 @@ jobs:
           include: Chart.yaml
 
       - name: test variable
-        run: echo "Chart version updated by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+        run: echo "Chart updated by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v7
