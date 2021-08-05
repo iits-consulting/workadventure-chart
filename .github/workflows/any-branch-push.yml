@@ -32,10 +32,16 @@ jobs:
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
-          fallback: xx0.0.1
+          fallback: 1.0.0
 
-      - name: show current tag
-        run: echo ${{ steps.previoustag.outputs.tag }}
+      - name: show new tag
+        run: echo ${{ steps.previoustag.outputs.tag }}-${{ env.GITHUB_EVENT_REF_SLUG }}-${{ env.GITHUB_SHA_SHORT }}
+
+#      - name: Bump version and push tag
+#        uses: ChloePlanet/github-tag-action@master
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          CUSTOM_TAG: ${{ steps.previoustag.outputs.tag }}-${{ env.GITHUB_EVENT_REF_SLUG }}-${{ env.GITHUB_SHA_SHORT }}
 
 #      - name: Print slug/short variables
 #        run: |
@@ -55,61 +61,61 @@ jobs:
 #          echo " - ${{ env.GITHUB_SHA_SHORT }}"
 
 
-  make-local-pr:
-    needs: [lint-test]
-    name: local PR
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
-
-      - name: pull-request-local
-        uses: repo-sync/pull-request@v2
-        with:
-          destination_branch: "main"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "Pulling ${{ env.GITHUB_EVENT_REF_SLUG }} into main"
-          pr_template: ".github/pull_request_template.md"
-          pr_reviewer: "wei,worker"
-          pr_label: "auto-pr"
-
-  make-external-pr:
-    needs: [lint-test]
-    name: PR to the chart repo
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
-
-      - name: Copy files
-        run: |
-          mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-          cp -r templates ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-          cp {.helmignore,Chart.yaml,LICENSE,README.md,values.yaml} ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-
-      - name: pull-request-repo
-        uses: paygoc6/action-pull-request-another-repo@v1.0.1
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
-        with:
-          source_folder: ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-          destination_repo: 'iits-consulting/helm-charts'
-          destination_folder: 'charts'
-          destination_base_branch: master
-          destination_head_branch: ${{ env.GITHUB_EVENT_REF_SLUG }}
-          user_email: 'denis.lavrushko@iits-consulting.de'
-          user_name: 'dlavrushk0'
-          pull_request_reviewers: 'dlavrushk0'
+#  make-local-pr:
+#    needs: [lint-test]
+#    name: local PR
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Inject slug/short variables
+#        uses: rlespinasse/github-slug-action@v3.x
+#
+#      - name: pull-request-local
+#        uses: repo-sync/pull-request@v2
+#        with:
+#          destination_branch: "main"
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          pr_title: "Pulling ${{ env.GITHUB_EVENT_REF_SLUG }} into main"
+#          pr_template: ".github/pull_request_template.md"
+#          pr_reviewer: "wei,worker"
+#          pr_label: "auto-pr"
+#
+#  make-external-pr:
+#    needs: [lint-test]
+#    name: PR to the chart repo
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Inject slug/short variables
+#        uses: rlespinasse/github-slug-action@v3.x
+#
+#      - name: Copy files
+#        run: |
+#          mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+#          cp -r templates ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+#          cp {.helmignore,Chart.yaml,LICENSE,README.md,values.yaml} ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+#
+#      - name: pull-request-repo
+#        uses: paygoc6/action-pull-request-another-repo@v1.0.1
+#        env:
+#          API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
+#        with:
+#          source_folder: ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+#          destination_repo: 'iits-consulting/helm-charts'
+#          destination_folder: 'charts'
+#          destination_base_branch: master
+#          destination_head_branch: ${{ env.GITHUB_EVENT_REF_SLUG }}
+#          user_email: 'denis.lavrushko@iits-consulting.de'
+#          user_name: 'dlavrushk0'
+#          pull_request_reviewers: 'dlavrushk0'
 
 ############ leave this for main chart repo #############
 #      - uses: actions/setup-python@v2
