@@ -34,19 +34,24 @@ jobs:
         with:
           fallback: 1.0.0
 
-      - name: Find and Replace
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: "version:.*|version:.*${{steps.previoustag.outputs.tag }}"
-          replace: "version: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }}"
-          include: Chart.yaml
+      - name: get new tag
+        run: |
+          ct=$(cat Chart.yaml | grep -oP 'version:.*')
+          echo $ct
 
-      - name: Commit and push changes
-        uses: EndBug/add-and-commit@v7
-        with:
-          add: Chart.yaml
-          message: "Chart version updated by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          tag: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }} --force
+#      - name: Find and Replace
+#        uses: jacobtomlinson/gha-find-replace@master
+#        with:
+#          find: "version:.*|version:.*${{steps.previoustag.outputs.tag }}"
+#          replace: "version: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }}"
+#          include: Chart.yaml
+#
+#      - name: Commit and push changes
+#        uses: EndBug/add-and-commit@v7
+#        with:
+#          add: Chart.yaml
+#          message: "Chart version updated by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+#          tag: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }} --force
 
 #      - name: update chart.yml
 #        run: "sed -i 's/"^version: 0.0.1"/new-text/g' input.txt"
