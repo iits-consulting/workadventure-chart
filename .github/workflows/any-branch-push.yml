@@ -37,7 +37,7 @@ jobs:
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@master
         with:
-          find: "(version:.*|version:.*${{steps.previoustag.outputs.tag }})"
+          find: "version:.*|version:.*${{steps.previoustag.outputs.tag }}"
           replace: "version: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }}"
           include: Chart.yaml
 
