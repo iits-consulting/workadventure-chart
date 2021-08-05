@@ -40,7 +40,7 @@ jobs:
           if [[ -n $ct ]]
           then
             echo "ERROR: Check your chart version in Chart.yaml file!!!
-            echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
+            echo 'It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp'
             exit
           fi
           nt=$(echo "$ct+${{ env.GITHUB_SHA_SHORT }}")
