@@ -55,7 +55,7 @@ jobs:
         with:
           add: Chart.yaml
           message: "[Auto-update] version updated"
-          tag: "version: ${{ env.NEW_TAG }} --force"
+          tag: "${{ env.NEW_TAG }}"
 
       - name: Bump version and push tag
         uses: ChloePlanet/github-tag-action@master
