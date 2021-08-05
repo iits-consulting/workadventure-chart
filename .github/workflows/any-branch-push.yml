@@ -40,7 +40,7 @@ jobs:
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@master
         with:
-          find: "^version:.*"
+          find: "version:.*"
           replace: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_EVENT_REF_SLUG }}+${{ env.GITHUB_SHA_SHORT }}
           include: Chart.yaml
 
