@@ -1,4 +1,4 @@
-name: Lint, Test, Make local PR, Make PR to the Repo
+name: Lint and make PR's
 
 on:
   push:
@@ -28,22 +28,22 @@ jobs:
         env:
           CHART_LOCATION: .
 
-#      - name: Print slug/short variables
-#        run: |
-#          echo "Slug variables"
-#          echo " - ${{ env.GITHUB_REF_SLUG }}"
-#          echo " - ${{ env.GITHUB_HEAD_REF_SLUG }}"
-#          echo " - ${{ env.GITHUB_BASE_REF_SLUG }}"
-#          echo " - ${{ env.GITHUB_REPOSITORY_SLUG }}"
-#          # output e.g. : master feat-new-feature v1.0.0 product-1.0.0-rc.2 new-awesome-product
-#          echo "Slug URL variables"
-#          echo " - ${{ env.GITHUB_REF_SLUG_URL }}"
-#          echo " - ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
-#          echo " - ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
-#          echo " - ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
-#          # output e.g. : master feat-new-feature v1-0-0 product-1-0-0-rc-2 new-awesome-product
-#          echo "Short SHA variables"
-#          echo " - ${{ env.GITHUB_SHA_SHORT }}"
+      - name: Print slug/short variables
+        run: |
+          echo "Slug variables"
+          echo " - ${{ env.GITHUB_REF_SLUG }}"
+          echo " - ${{ env.GITHUB_HEAD_REF_SLUG }}"
+          echo " - ${{ env.GITHUB_BASE_REF_SLUG }}"
+          echo " - ${{ env.GITHUB_REPOSITORY_SLUG }}"
+          # output e.g. : master feat-new-feature v1.0.0 product-1.0.0-rc.2 new-awesome-product
+          echo "Slug URL variables"
+          echo " - ${{ env.GITHUB_REF_SLUG_URL }}"
+          echo " - ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
+          echo " - ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
+          echo " - ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
+          # output e.g. : master feat-new-feature v1-0-0 product-1-0-0-rc-2 new-awesome-product
+          echo "Short SHA variables"
+          echo " - ${{ env.GITHUB_SHA_SHORT }}"
 
 
   make-local-pr:
@@ -89,11 +89,6 @@ jobs:
           cp {.helmignore,Chart.yaml,LICENSE,README.md,values.yaml} ${{ env.GITHUB_REPOSITORY_NAME_PART }}
 
       - name: pull-request-repo
-#        uses: vsoch/pull-request-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          BRANCH_PREFIX: "update/"
-#          PULL_REQUEST_BRANCH: "master"
         uses: paygoc6/action-pull-request-another-repo@v1.0.1
         env:
           API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
