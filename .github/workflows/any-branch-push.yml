@@ -38,6 +38,8 @@ jobs:
         run: |
           ct=$(cat Chart.yaml | grep -oP 'version:.*')
           echo $ct
+          nt=$(echo $ct | sed "s/(?<=version: ).*/\+${{ env.GITHUB_SHA_SHORT }}/")
+          echo $nt
 
 #      - name: Find and Replace
 #        uses: jacobtomlinson/gha-find-replace@master
