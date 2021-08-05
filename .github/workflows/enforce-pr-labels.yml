@@ -13,3 +13,5 @@ jobs:
         with:
           REQUIRED_LABELS_ANY: "major,minor,patch"
           REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['major','minor','patch']"
+
+

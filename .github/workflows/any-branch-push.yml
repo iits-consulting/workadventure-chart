@@ -28,22 +28,31 @@ jobs:
         env:
           CHART_LOCATION: .
 
-      - name: Print slug/short variables
-        run: |
-          echo "Slug variables"
-          echo " - ${{ env.GITHUB_REF_SLUG }}"
-          echo " - ${{ env.GITHUB_HEAD_REF_SLUG }}"
-          echo " - ${{ env.GITHUB_BASE_REF_SLUG }}"
-          echo " - ${{ env.GITHUB_REPOSITORY_SLUG }}"
-          # output e.g. : master feat-new-feature v1.0.0 product-1.0.0-rc.2 new-awesome-product
-          echo "Slug URL variables"
-          echo " - ${{ env.GITHUB_REF_SLUG_URL }}"
-          echo " - ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
-          echo " - ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
-          echo " - ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
-          # output e.g. : master feat-new-feature v1-0-0 product-1-0-0-rc-2 new-awesome-product
-          echo "Short SHA variables"
-          echo " - ${{ env.GITHUB_SHA_SHORT }}"
+      - name: get previous tag
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 0.0.1
+
+      - name: show current tag
+        run: echo ${{ steps.previoustag.outputs.tag }}
+
+#      - name: Print slug/short variables
+#        run: |
+#          echo "Slug variables"
+#          echo " - ${{ env.GITHUB_REF_SLUG }}"
+#          echo " - ${{ env.GITHUB_HEAD_REF_SLUG }}"
+#          echo " - ${{ env.GITHUB_BASE_REF_SLUG }}"
+#          echo " - ${{ env.GITHUB_REPOSITORY_SLUG }}"
+#          # output e.g. : master feat-new-feature v1.0.0 product-1.0.0-rc.2 new-awesome-product
+#          echo "Slug URL variables"
+#          echo " - ${{ env.GITHUB_REF_SLUG_URL }}"
+#          echo " - ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
+#          echo " - ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
+#          echo " - ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
+#          # output e.g. : master feat-new-feature v1-0-0 product-1-0-0-rc-2 new-awesome-product
+#          echo "Short SHA variables"
+#          echo " - ${{ env.GITHUB_SHA_SHORT }}"
 
 
   make-local-pr:
