@@ -37,18 +37,15 @@ jobs:
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@master
         with:
-          find: "version:.*"
+          find: "(version:.*|version:.*${{steps.previoustag.outputs.tag }})"
           replace: "version: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }}"
           include: Chart.yaml
-
-      - name: test variable
-        run: echo "Chart updated by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v7
         with:
           add: Chart.yaml
-          message: "Chart version updated by ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
+          message: "Chart version updated by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           tag: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }} --force
 
 #      - name: update chart.yml
