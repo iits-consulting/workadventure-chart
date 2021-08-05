@@ -45,8 +45,7 @@ jobs:
         uses: devops-infra/action-commit-push@v0.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          commit_prefix: "[AUTO-COMMIT] chart version update"
-          commit_message: Chart version updated by ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
+          commit_message: "Chart version updated by ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
 
 #      - name: update chart.yml
 #        run: "sed -i 's/"^version: 0.0.1"/new-text/g' input.txt"
