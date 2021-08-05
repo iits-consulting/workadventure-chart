@@ -41,6 +41,9 @@ jobs:
           replace: "version: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }}"
           include: Chart.yaml
 
+      - name: test variable
+        run: echo "Chart version updated by ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
+
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v7
         with:
