@@ -44,6 +44,8 @@ jobs:
           replace: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_EVENT_REF_SLUG }}+${{ env.GITHUB_SHA_SHORT }}
           include: Chart.yaml
 
+      - name: check version
+        run: cat Chart.yaml
 #      - name: update chart.yml
 #        run: "sed -i 's/"^version: 0.0.1"/new-text/g' input.txt"
 #
