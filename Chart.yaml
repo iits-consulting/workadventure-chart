@@ -3,4 +3,4 @@ appVersion: v1.1.0
 description: A Helm chart for Kubernetes
 name: workadventure
 type: application
-version: 0.0.1+58d6c8c7
+version: 0.0.1+c4a91d48
