@@ -34,14 +34,11 @@ jobs:
         with:
           fallback: 1.0.0
 
-      - name: show new tag
-        run: echo ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_EVENT_REF_SLUG }}+${{ env.GITHUB_SHA_SHORT }}
-
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@master
         with:
           find: "version:.*"
-          replace: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_EVENT_REF_SLUG }}+${{ env.GITHUB_SHA_SHORT }}
+          replace: "version: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_EVENT_REF_SLUG }}+${{ env.GITHUB_SHA_SHORT }}"
           include: Chart.yaml
 
       - name: check version
