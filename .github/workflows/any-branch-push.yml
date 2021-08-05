@@ -41,7 +41,7 @@ jobs:
           then
             echo "ERROR: Check your chart version in Chart.yaml file!!!"
             echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
-            exit
+            exit 1
           fi
           nt=$(echo "$ct+${{ env.GITHUB_SHA_SHORT }}")
           echo $nt
