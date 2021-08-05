@@ -37,10 +37,10 @@ jobs:
       - name: get new tag
         run: |
           ct=$(cat Chart.yaml | tr -d " " | grep -oP '(?<=version:)\d+\.\d+\.\d+')
-          if [[ -z $ct ]]
+          if [[ -n $ct ]]
           then
-            echo "ERROR: Check your chart version! It should have SemVer numbers \
-            and be processed by regexp: '(?<=version:)\d+\.\d+\.\d+'"
+            echo "ERROR: Check your chart version in Chart.yaml file!!!
+            echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
             exit
           fi
           nt=$(echo "$ct+${{ env.GITHUB_SHA_SHORT }}")
