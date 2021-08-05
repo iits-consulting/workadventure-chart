@@ -36,7 +36,7 @@ jobs:
 
       - name: show new tag
         run: echo ${{ steps.previoustag.outputs.tag }}-${{ env.GITHUB_EVENT_REF_SLUG }}-${{ env.GITHUB_SHA_SHORT }}
-
+#
 #      - name: Bump version and push tag
 #        uses: ChloePlanet/github-tag-action@master
 #        env:
