@@ -42,10 +42,11 @@ jobs:
           include: Chart.yaml
 
       - name: Commit and push changes
-        uses: devops-infra/action-commit-push@v0.3
+        uses: EndBug/add-and-commit@v7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          commit_message: ${{ env.GITHUB_SERVER_URL }}
+          add: Chart.yaml
+          message: "Chart version updated by ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
+          tag: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }} --force
 
 #      - name: update chart.yml
 #        run: "sed -i 's/"^version: 0.0.1"/new-text/g' input.txt"
