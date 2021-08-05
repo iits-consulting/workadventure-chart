@@ -9,8 +9,6 @@ jobs:
   lint-test:
     name: Linting
     runs-on: ubuntu-latest
-    outputs:
-      newTag: ${{ steps.nt.outputs.nt }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -46,25 +44,25 @@ jobs:
             echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
             exit 1
           fi
+          echo "NEW_TAG=$(echo "$ct+${{ env.GITHUB_SHA_SHORT }}")" >> $GITHUB_ENV
           nt=$(echo "$ct+${{ env.GITHUB_SHA_SHORT }}")
-          echo "::set-output name=nt::$ct+${{ env.GITHUB_SHA_SHORT }}"
 
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@master
         with:
           find: "version:.*"
-          replace: "version: $nt"
+          replace: "version: $NEW_TAG"
           include: Chart.yaml
 
       - name: check Chart.yaml
         run: cat Chart.yaml
-#
-#      - name: Commit and push changes
-#        uses: EndBug/add-and-commit@v7
-#        with:
-#          add: Chart.yaml
-#          message: "Chart version updated by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-#          tag: ${{ steps.previoustag.outputs.tag }}+${{ env.GITHUB_SHA_SHORT }} --force
+
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: Chart.yaml
+          message: "[Auto-update] version updated"
+          tag: "version: $NEW_TAG" --force
 
 #      - name: update chart.yml
 #        run: "sed -i 's/"^version: 0.0.1"/new-text/g' input.txt"
