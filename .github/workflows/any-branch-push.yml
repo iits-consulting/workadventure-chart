@@ -62,7 +62,7 @@ jobs:
         with:
           add: Chart.yaml
           message: "[Auto-update] version updated"
-          tag: "version: $NEW_TAG" --force
+          tag: "version: $NEW_TAG --force"
 
 #      - name: update chart.yml
 #        run: "sed -i 's/"^version: 0.0.1"/new-text/g' input.txt"
