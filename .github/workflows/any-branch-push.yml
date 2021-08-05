@@ -15,8 +15,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
+      - name: Add SHORT_SHA env property with commit short sha
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA_SHORT} | cut -c1-8`" >> $GITHUB_ENV
 
 #      - name: set up helm
 #        uses: azure/setup-helm@v1
