@@ -116,20 +116,20 @@ jobs:
 #          pr_reviewer: "wei,worker"
 #          pr_label: "auto-pr"
 #
-#  make-external-pr:
-#    needs: [lint-test]
-#    name: Make/Update external PR
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#        with:
-#          ref: "${{ needs.lint-test.outputs.git_pr_sha_short }}"
-#          fetch-depth: 0
-#
-#      - name: check chart version
-#        run: cat Chart.yaml
-#
+  make-external-pr:
+    needs: [lint-test]
+    name: Make/Update external PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: "${{ needs.lint-test.outputs.git_pr_sha_short }}"
+          fetch-depth: 0
+
+      - name: check chart version
+        run: cat Chart.yaml
+
 ##      - name: Inject slug/short variables
 ##        uses: rlespinasse/github-slug-action@v3.x
 ##
