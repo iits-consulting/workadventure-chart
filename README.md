@@ -58,5 +58,3 @@ You can override any values defined [values.yaml](./values.yaml). Read Helm doc 
 [ ] Simplify templates ?
 
 [ ] CI/CD this Chart
-
-test
