@@ -13,6 +13,9 @@ jobs:
   lint-test:
     name: Lint and bump new version
     runs-on: ubuntu-latest
+    outputs:
+      git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
+      git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -70,9 +73,6 @@ jobs:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          CUSTOM_TAG: ${{ env.NEW_TAG }}
 
-    outputs:
-      git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
-      git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
 ##      - name: Print slug/short variables
 ##        run: |
 ##          echo "Slug variables"
