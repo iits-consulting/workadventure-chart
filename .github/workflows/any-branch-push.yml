@@ -77,13 +77,14 @@ jobs:
         run: |
           sha_new=$(git rev-parse HEAD)
           echo $sha_new
-          echo "::set-output name=SHA::$sha_new"
+          echo "::set-output name=sha::$sha_new"
       - run:
           echo ${{ steps.sha.outputs.SHA }}
 
     outputs:
       git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
       git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
+      new_sha: ${{ steps.sha.outputs.sha }}
 
   make-local-pr:
     needs: [lint-test]
