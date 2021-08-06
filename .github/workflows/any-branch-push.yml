@@ -114,7 +114,7 @@ jobs:
     name: Make/Update external PR
     runs-on: ubuntu-latest
     steps:
-      - name: test ref
+      - name: TEMP test ref
         run: echo ${{ needs.lint-test.outputs.new_sha }}
 
       - name: Checkout
@@ -123,63 +123,66 @@ jobs:
           ref: ${{ needs.lint-test.outputs.new_sha }}
           fetch-depth: 0
 
-      - name: check chart version
+      - name: TEMP check chart version
         run: cat Chart.yaml
 
-##      - name: Inject slug/short variables
-##        uses: rlespinasse/github-slug-action@v3.x
-##
-##      - name: Make/Update external PR
-##        run: |
-##          mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-##          cp -r templates ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-##          cp {.helmignore,Chart.yaml,LICENSE,README.md,values.yaml} ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-###          rsync -av --progress . ${{ env.GITHUB_REPOSITORY_NAME_PART }}/ --exclude .github
-##
-##      - name: pull-request-repo
-##        uses: paygoc6/action-pull-request-another-repo@v1.0.1
-##        env:
-##          API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
-##        with:
-##          source_folder: ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-##          destination_repo: 'iits-consulting/helm-charts'
-##          destination_folder: 'charts'
-##          destination_base_branch: master
-##          destination_head_branch: ${{ env.GITHUB_EVENT_REF_SLUG }}
-########################
-########################
-########################
-##          user_email: 'denis.lavrushko@iits-consulting.de'
-##          user_name: 'dlavrushk0'
-##          pull_request_reviewers: 'dlavrushk0'
-#######################
-#######################
-#######################
-##
-##
-############## leave this for main chart repo #############
-###      - uses: actions/setup-python@v2
-###        with:
-###          python-version: 3.7
-###
-###      - name: Set up chart-txesting
-###        uses: helm/chart-testing-action@v2.0.1
-###
-###      - name: Run chart-testing (list-changed)
-###        id: list-changed
-###        run: |
-###          changed=$(ct list-changed)
-###          if [[ -n "$changed" ]]; then
-###            echo "::set-output name=changed::true"
-###          fi
-###
-###
-###      - name: Run chart-testing (lint)
-###        run: ct lint
-###
-###      - name: Create kind cluster
-###        uses: helm/kind-action@v1.0.0
-###        if: steps.list-changed.outputs.changed == 'true'
-###
-###      - name: Run chart-testing (install)
-###        run: ct install
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Make/Update external PR
+        run: |
+          mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+          cp -r templates ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+          cp {.helmignore,Chart.yaml,LICENSE,README.md,values.yaml} ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+#          rsync -av --progress . ${{ env.GITHUB_REPOSITORY_NAME_PART }}/ --exclude .github
+
+      - name: TEMP test direcotry structure
+        run: ls -la ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+
+      - name: pull-request-repo
+        uses: paygoc6/action-pull-request-another-repo@v1.0.1
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
+        with:
+          source_folder: ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+          destination_repo: 'iits-consulting/helm-charts'
+          destination_folder: 'charts'
+          destination_base_branch: master
+          destination_head_branch: ${{ env.GITHUB_EVENT_REF_SLUG }}
+######################
+######################
+######################
+          user_email: 'denis.lavrushko@iits-consulting.de'
+          user_name: 'dlavrushk0'
+          pull_request_reviewers: 'dlavrushk0'
+#####################
+#####################
+#####################
+
+
+############ leave this for main chart repo #############
+#      - uses: actions/setup-python@v2
+#        with:
+#          python-version: 3.7
+#
+#      - name: Set up chart-txesting
+#        uses: helm/chart-testing-action@v2.0.1
+#
+#      - name: Run chart-testing (list-changed)
+#        id: list-changed
+#        run: |
+#          changed=$(ct list-changed)
+#          if [[ -n "$changed" ]]; then
+#            echo "::set-output name=changed::true"
+#          fi
+#
+#
+#      - name: Run chart-testing (lint)
+#        run: ct lint
+#
+#      - name: Create kind cluster
+#        uses: helm/kind-action@v1.0.0
+#        if: steps.list-changed.outputs.changed == 'true'
+#
+#      - name: Run chart-testing (install)
+#        run: ct install
