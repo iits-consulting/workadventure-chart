@@ -2,10 +2,13 @@ name: Lint and make PR's
 
 on:
   push:
+    paths-ignore:
+      - ".github/**"
+      - "*.md"
+      - "LICENSE"
     branches-ignore:
       - main
-    paths-ignore:
-      - .github
+##test
 
 jobs:
   lint-test:
