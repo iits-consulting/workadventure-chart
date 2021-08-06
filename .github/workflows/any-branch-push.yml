@@ -146,7 +146,6 @@ jobs:
 ######################
           user_email: 'denis.lavrushko@iits-consulting.de'
           user_name: 'dlavrushk0'
-          pull_request_reviewers: 'dlavrushk0'
           labels: 'test,workadventure'
 ####################
 ####################
