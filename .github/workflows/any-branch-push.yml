@@ -132,7 +132,7 @@ jobs:
           cat Chart.yaml
 
       - name: pull-request-repo
-        uses: paygoc6/action-pull-request-another-repo@v1.0.1
+        uses: iits-consulting/action-pull-request-another-repo@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
         with:
@@ -147,6 +147,7 @@ jobs:
           user_email: 'denis.lavrushko@iits-consulting.de'
           user_name: 'dlavrushk0'
           pull_request_reviewers: 'dlavrushk0'
+          labels: 'test,workadventure'
 ####################
 ####################
 ####################
