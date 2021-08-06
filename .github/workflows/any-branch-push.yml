@@ -130,8 +130,6 @@ jobs:
         run: |
           echo ${{ env.BRANCH_NAME }}
           cat Chart.yaml
-#      - name: Inject slug/short variables
-#        uses: rlespinasse/github-slug-action@v3.x
 
       - name: pull-request-repo
         uses: paygoc6/action-pull-request-another-repo@v1.0.1
