@@ -122,6 +122,8 @@ jobs:
         with:
           ref: ${{ needs.lint-test.outputs.new_sha }}
           fetch-depth: 0
+
+      - name: Setting branch name variable
         run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
 
       - name: TEMP check chart version
