@@ -124,7 +124,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: "${{ needs.lint-test.outputs.git_pr_sha_short }}"
+          ref: "${{ needs.lint-test.outputs.git_pr_sha }}"
           fetch-depth: 0
 
       - name: check chart version
