@@ -28,9 +28,6 @@ jobs:
 
           echo "::set-output name=git_pr_sha::${GIT_PR_SHA}"
           echo "::set-output name=git_pr_sha_short::${GIT_PR_SHA_SHORT}"
-      outputs:
-        git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
-        git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
 
       - name: Add SHORT_SHA env property with commit short sha
         run: echo "GITHUB_SHA_SHORT=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
@@ -77,6 +74,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CUSTOM_TAG: ${{ env.NEW_TAG }}
 
+    outputs:
+      git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
+      git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
 #      - name: Print slug/short variables
 #        run: |
 #          echo "Slug variables"
