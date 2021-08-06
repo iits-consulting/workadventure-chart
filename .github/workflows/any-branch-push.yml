@@ -30,10 +30,10 @@ jobs:
       - name: Add SHORT_SHA env property with commit short sha
         run: echo "GITHUB_SHA_SHORT=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
-      - name: helm-check
-        uses: igabaydulin/helm-check-action@0.1.4
-        env:
-          CHART_LOCATION: .
+#      - name: helm-check
+#        uses: igabaydulin/helm-check-action@0.1.4
+#        env:
+#          CHART_LOCATION: .
 
       - name: Get new tag
         id: newTagStep
