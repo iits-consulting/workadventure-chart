@@ -122,7 +122,9 @@ jobs:
       - name: Make/Update external PR
         run: |
           mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-          rsync -av --progress . ${{ env.GITHUB_REPOSITORY_NAME_PART }}/ --exclude .github
+          cp -r templates ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+          cp {.helmignore,Chart.yaml,LICENSE,README.md,values.yaml} ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+#          rsync -av --progress . ${{ env.GITHUB_REPOSITORY_NAME_PART }}/ --exclude .github
 
       - name: pull-request-repo
         uses: paygoc6/action-pull-request-another-repo@v1.0.1
