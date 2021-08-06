@@ -52,70 +52,53 @@ jobs:
           echo ${{ env.NEW_TAG }}
           echo ${{ env.GIT_SHA_SHORT }}
 
-#      - name: Find and replace version in Chart.yaml
-#        uses: jacobtomlinson/gha-find-replace@master
-#        with:
-#          find: "version:.*"
-#          replace: "version: ${{ env.NEW_TAG }}"
-#          include: Chart.yaml
-#
-#      - name: Commit and push changes
-#        uses: EndBug/add-and-commit@v7
-#        with:
-#          add: Chart.yaml
-#          message: "[Auto-update] version updated"
-#          tag: "${{ env.NEW_TAG }}"
-#
-#      - name: Bump version and push tag
-#        uses: ChloePlanet/github-tag-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          CUSTOM_TAG: ${{ env.NEW_TAG }}
+      - name: Find and replace version in Chart.yaml
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "version:.*"
+          replace: "version: ${{ env.NEW_TAG }}"
+          include: Chart.yaml
+
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: Chart.yaml
+          message: "[Auto-update] version updated"
+          tag: "${{ env.NEW_TAG }}"
+
+      - name: Bump version and push tag
+        uses: ChloePlanet/github-tag-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CUSTOM_TAG: ${{ env.NEW_TAG }}
 
     outputs:
       git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
       git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
-##      - name: Print slug/short variables
-##        run: |
-##          echo "Slug variables"
-##          echo " - ${{ env.GITHUB_REF_SLUG }}"
-##          echo " - ${{ env.GITHUB_HEAD_REF_SLUG }}"
-##          echo " - ${{ env.GITHUB_BASE_REF_SLUG }}"
-##          echo " - ${{ env.GITHUB_REPOSITORY_SLUG }}"
-##          # output e.g. : master feat-new-feature v1.0.0 product-1.0.0-rc.2 new-awesome-product
-##          echo "Slug URL variables"
-##          echo " - ${{ env.GITHUB_REF_SLUG_URL }}"
-##          echo " - ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
-##          echo " - ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
-##          echo " - ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
-##          # output e.g. : master feat-new-feature v1-0-0 product-1-0-0-rc-2 new-awesome-product
-##          echo "Short SHA variables"
-##          echo " - ${{ env.GITHUB_SHA_SHORT }}"
-##
-##
-#  make-local-pr:
-#    needs: [lint-test]
-#    name: Make/Update local PR
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#        with:
-#          fetch-depth: 0
-#
-#      - name: Inject slug/short variables
-#        uses: rlespinasse/github-slug-action@v3.x
-#
-#      - name: Make/Update local PR
-#        uses: repo-sync/pull-request@v2
-#        with:
-#          destination_branch: "main"
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          pr_title: "Pulling ${{ env.GITHUB_EVENT_REF_SLUG }} into main"
-#          pr_template: ".github/pull_request_template.md"
-#          pr_reviewer: "wei,worker"
-#          pr_label: "auto-pr"
-#
+
+  make-local-pr:
+    needs: [lint-test]
+    name: Make/Update local PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Make/Update local PR
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "Pulling ${{ env.GITHUB_EVENT_REF_SLUG }} into main"
+          pr_template: ".github/pull_request_template.md"
+          pr_reviewer: "wei,worker"
+          pr_label: "auto-pr"
+
   make-external-pr:
     needs: [lint-test]
     name: Make/Update external PR
