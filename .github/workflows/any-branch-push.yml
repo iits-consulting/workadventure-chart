@@ -116,14 +116,15 @@ jobs:
     steps:
       - name: test ref
         run: echo ${{ needs.lint-test.outputs.new_sha }}
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#        with:
-#          ref: ${{ needs.lint-test.outputs.new_sha }}
-#          fetch-depth: 0
-#
-#      - name: check chart version
-#        run: cat Chart.yaml
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.lint-test.outputs.new_sha }}
+          fetch-depth: 0
+
+      - name: check chart version
+        run: cat Chart.yaml
 
 ##      - name: Inject slug/short variables
 ##        uses: rlespinasse/github-slug-action@v3.x
