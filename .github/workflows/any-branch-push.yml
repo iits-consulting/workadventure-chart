@@ -13,9 +13,6 @@ jobs:
   lint-test:
     name: Lint and bump new version
     runs-on: ubuntu-latest
-    outputs:
-      git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
-      git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -29,9 +26,9 @@ jobs:
 
           echo "::set-output name=git_pr_sha::${GIT_PR_SHA}"
           echo "::set-output name=git_pr_sha_short::${GIT_PR_SHA_SHORT}"
-
-      - name: Add SHORT_SHA env property with commit short sha
-        run: echo "GITHUB_SHA_SHORT=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+          echo "GIT_SHA_SHORT=`echo ${GIT_PR_SHA_SHORT}`" >> $GITHUB_ENV
+#      - name: Add SHORT_SHA env property with commit short sha
+#        run: echo "GITHUB_SHA_SHORT=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
 #      - name: helm-check
 #        uses: igabaydulin/helm-check-action@0.1.4
@@ -48,10 +45,12 @@ jobs:
             echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
             exit 1
           fi
-          echo "NEW_TAG=$(echo "$ct+${{ needs.lint-test.outputs.git_pr_sha_short }}")" >> $GITHUB_ENV
+          echo "NEW_TAG=$(echo "$ct+${{ env.GIT_SHA_SHORT }}")" >> $GITHUB_ENV
 
       - name: check version
-        run: echo ${{ needs.lint-test.outputs.git_pr_sha_short }}
+        run: |
+          echo ${{ env.NEW_TAG }}
+          echo ${{ env.GIT_SHA_SHORT }}
 
 #      - name: Find and replace version in Chart.yaml
 #        uses: jacobtomlinson/gha-find-replace@master
@@ -73,6 +72,9 @@ jobs:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          CUSTOM_TAG: ${{ env.NEW_TAG }}
 
+    outputs:
+      git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
+      git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
 ##      - name: Print slug/short variables
 ##        run: |
 ##          echo "Slug variables"
