@@ -20,6 +20,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - id: identify
+        run: |
+          # use bash variable expression to get the substring
+          export GIT_PR_SHA="${{ github.sha }}"
+          export GIT_PR_SHA_SHORT="${GIT_PR_SHA:0:10}"
+
+          echo "::set-output name=git_pr_sha::${GIT_PR_SHA}"
+          echo "::set-output name=git_pr_sha_short::${GIT_PR_SHA_SHORT}"
+      outputs:
+        git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
+        git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
+
       - name: Add SHORT_SHA env property with commit short sha
         run: echo "GITHUB_SHA_SHORT=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
@@ -43,7 +55,7 @@ jobs:
             echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
             exit 1
           fi
-          echo "NEW_TAG=$(echo "$ct+${{ env.GITHUB_SHA_SHORT }}")" >> $GITHUB_ENV
+          echo "NEW_TAG=$(echo "$ct+${{ needs.first-job.outputs.git_pr_sha_short }}")" >> $GITHUB_ENV
 
       - name: Find and replace version in Chart.yaml
         uses: jacobtomlinson/gha-find-replace@master
@@ -114,6 +126,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          ref: "${{ needs.first-job.outputs.git_pr_sha_short }}"
           fetch-depth: 0
 
       - name: check chart version
