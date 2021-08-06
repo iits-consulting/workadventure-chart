@@ -99,6 +99,15 @@ jobs:
           pr_reviewer: "wei,worker"
           pr_label: "auto-pr"
 
+      - name: get sha
+        id: sha
+        run: |
+          sha_new=$(git rev-parse HEAD)
+          echo $sha_new
+          echo "::set-output name=SHA::$sha_new"
+          - run:
+              echo ${{ steps.sha.outputs.SHA }}
+
   make-external-pr:
     needs: [lint-test]
     name: Make/Update external PR
@@ -107,7 +116,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: echo ${GITHUB_REF#refs/heads/}
+          ref: ${{ needs.lint-test.outputs.new_sha }}
           fetch-depth: 0
 
       - name: check chart version
