@@ -107,7 +107,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ${GITHUB_REF#refs/heads/}
+          ref: echo ${GITHUB_REF#refs/heads/}
           fetch-depth: 0
 
       - name: check chart version
