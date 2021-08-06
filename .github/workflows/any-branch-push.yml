@@ -48,7 +48,7 @@ jobs:
           echo "NEW_TAG=$(echo "$ct+${{ needs.lint-test.outputs.git_pr_sha_short }}")" >> $GITHUB_ENV
 
       - name: check version
-        run: echo ${{ env.NEW_TAG }}
+        run: echo ${{ needs.lint-test.outputs.git_pr_sha_short }}
 
 #      - name: Find and replace version in Chart.yaml
 #        uses: jacobtomlinson/gha-find-replace@master
