@@ -72,6 +72,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CUSTOM_TAG: ${{ env.NEW_TAG }}
 
+      - name: get sha
+        id: sha
+        run: |
+          sha_new=$(git rev-parse HEAD)
+          echo $sha_new
+          echo "::set-output name=SHA::$sha_new"
+          - run:
+              echo ${{ steps.sha.outputs.SHA }}
+
     outputs:
       git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
       git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
@@ -98,15 +107,6 @@ jobs:
           pr_template: ".github/pull_request_template.md"
           pr_reviewer: "wei,worker"
           pr_label: "auto-pr"
-
-      - name: get sha
-        id: sha
-        run: |
-          sha_new=$(git rev-parse HEAD)
-          echo $sha_new
-          echo "::set-output name=SHA::$sha_new"
-          - run:
-              echo ${{ steps.sha.outputs.SHA }}
 
   make-external-pr:
     needs: [lint-test]
