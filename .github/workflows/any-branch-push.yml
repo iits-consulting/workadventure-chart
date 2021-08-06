@@ -78,8 +78,8 @@ jobs:
           sha_new=$(git rev-parse HEAD)
           echo $sha_new
           echo "::set-output name=SHA::$sha_new"
-          - run:
-              echo ${{ steps.sha.outputs.SHA }}
+      - run:
+          echo ${{ steps.sha.outputs.SHA }}
 
     outputs:
       git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
