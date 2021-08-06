@@ -11,7 +11,7 @@ on:
 
 jobs:
   lint-test:
-    name: Lint and bump new version
+    name: Lint and update chart version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
