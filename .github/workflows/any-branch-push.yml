@@ -55,7 +55,7 @@ jobs:
             echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
             exit 1
           fi
-          echo "NEW_TAG=$(echo "$ct+${{ needs.first-job.outputs.git_pr_sha_short }}")" >> $GITHUB_ENV
+          echo "NEW_TAG=$(echo "$ct+${{ needs.lint-test.outputs.git_pr_sha_short }}")" >> $GITHUB_ENV
 
       - name: Find and replace version in Chart.yaml
         uses: jacobtomlinson/gha-find-replace@master
@@ -126,7 +126,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: "${{ needs.first-job.outputs.git_pr_sha_short }}"
+          ref: "${{ needs.lint-test.outputs.git_pr_sha_short }}"
           fetch-depth: 0
 
       - name: check chart version
