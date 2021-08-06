@@ -116,32 +116,35 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
+      - name: check chart version
+        run: cat Chart.yaml
 
-      - name: Make/Update external PR
-        run: |
-          mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-          cp -r templates ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-          cp {.helmignore,Chart.yaml,LICENSE,README.md,values.yaml} ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-#          rsync -av --progress . ${{ env.GITHUB_REPOSITORY_NAME_PART }}/ --exclude .github
-
-      - name: pull-request-repo
-        uses: paygoc6/action-pull-request-another-repo@v1.0.1
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
-        with:
-          source_folder: ${{ env.GITHUB_REPOSITORY_NAME_PART }}
-          destination_repo: 'iits-consulting/helm-charts'
-          destination_folder: 'charts'
-          destination_base_branch: master
-          destination_head_branch: ${{ env.GITHUB_EVENT_REF_SLUG }}
-######################
-######################
-######################
-          user_email: 'denis.lavrushko@iits-consulting.de'
-          user_name: 'dlavrushk0'
-          pull_request_reviewers: 'dlavrushk0'
+#      - name: Inject slug/short variables
+#        uses: rlespinasse/github-slug-action@v3.x
+#
+#      - name: Make/Update external PR
+#        run: |
+#          mkdir ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+#          cp -r templates ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+#          cp {.helmignore,Chart.yaml,LICENSE,README.md,values.yaml} ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+##          rsync -av --progress . ${{ env.GITHUB_REPOSITORY_NAME_PART }}/ --exclude .github
+#
+#      - name: pull-request-repo
+#        uses: paygoc6/action-pull-request-another-repo@v1.0.1
+#        env:
+#          API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
+#        with:
+#          source_folder: ${{ env.GITHUB_REPOSITORY_NAME_PART }}
+#          destination_repo: 'iits-consulting/helm-charts'
+#          destination_folder: 'charts'
+#          destination_base_branch: master
+#          destination_head_branch: ${{ env.GITHUB_EVENT_REF_SLUG }}
+#######################
+#######################
+#######################
+#          user_email: 'denis.lavrushko@iits-consulting.de'
+#          user_name: 'dlavrushk0'
+#          pull_request_reviewers: 'dlavrushk0'
 ######################
 ######################
 ######################
