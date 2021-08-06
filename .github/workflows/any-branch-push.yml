@@ -146,7 +146,7 @@ jobs:
 ######################
           user_email: 'denis.lavrushko@iits-consulting.de'
           user_name: 'dlavrushk0'
-          labels: 'auto deployed, chartName workadventure'
+          labels: 'auto-deployed, chartName=workadventure'
 ####################
 ####################
 ####################
