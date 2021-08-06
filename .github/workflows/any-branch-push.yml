@@ -105,7 +105,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: check ref name
-        run: echo ${{ env.GITHUB_HEAD_REF }}
+        run: |
+          echo ${GITHUB_REF##*/}
+          echo ${GITHUB_REF#refs/heads/}
 #      - name: Checkout
 #        uses: actions/checkout@v2
 #        with:
