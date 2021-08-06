@@ -104,14 +104,16 @@ jobs:
     name: Make/Update external PR
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: "${{ needs.lint-test.outputs.git_pr_sha }}"
-          fetch-depth: 0
-
-      - name: check chart version
-        run: cat Chart.yaml
+      - name: check ref name
+        run: echo ${{ env.GITHUB_HEAD_REF }}
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          ref: "${{ needs.lint-test.outputs.git_pr_sha }}"
+#          fetch-depth: 0
+#
+#      - name: check chart version
+#        run: cat Chart.yaml
 
 ##      - name: Inject slug/short variables
 ##        uses: rlespinasse/github-slug-action@v3.x
