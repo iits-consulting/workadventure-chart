@@ -144,11 +144,11 @@ jobs:
 
       - name: save helm chart to local registry
         run: |
-          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/workadventure:latest
+          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/workadventure:${{ needs.lint-test.outputs.new_tag }}
 
       - name: publish chart to acr
         run: |
-          helm chart push ${{ env.ACR_NAME }}.azurecr.io/workadventure:latest
+          helm chart push ${{ env.ACR_NAME }}.azurecr.io/workadventure:${{ needs.lint-test.outputs.new_tag }}
 
 
 #
