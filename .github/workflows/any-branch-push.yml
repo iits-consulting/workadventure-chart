@@ -52,7 +52,7 @@ jobs:
             echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
             exit 1
           fi
-          echo "NEW_TAG=$(echo "$ct+${{ env.GIT_SHA_SHORT }}")" >> $GITHUB_ENV
+          echo "NEW_TAG=$(echo "$ct-${{ env.GIT_SHA_SHORT }}")" >> $GITHUB_ENV
           echo "::set-output name=git_new_tag::${NEW_TAG}"
 
       - name: check version
@@ -131,24 +131,26 @@ jobs:
         with:
           ref: ${{ needs.lint-test.outputs.new_sha }}
           fetch-depth: 0
+      - name: test
+        run: echo ${{ needs.lint-test.outputs.new_tag }}
 
-      - name: Setting branch name variable
-        run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
-
-      - name: install helm
-        uses: Azure/setup-helm@v1.1
-
-      - name: login to acr using helm
-        run: |
-          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
-
-      - name: save helm chart to local registry
-        run: |
-          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/workadventure:1.0.0-c97fbf8f31
-
-      - name: publish chart to acr
-        run: |
-          helm chart push ${{ env.ACR_NAME }}.azurecr.io/workadventure:1.0.0-c97fbf8f31
+#      - name: Setting branch name variable
+#        run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
+#
+#      - name: install helm
+#        uses: Azure/setup-helm@v1.1
+#
+#      - name: login to acr using helm
+#        run: |
+#          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
+#
+#      - name: save helm chart to local registry
+#        run: |
+#          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/workadventure:1.0.0-c97fbf8f31
+#
+#      - name: publish chart to acr
+#        run: |
+#          helm chart push ${{ env.ACR_NAME }}.azurecr.io/workadventure:1.0.0-c97fbf8f31
 
 
 #
