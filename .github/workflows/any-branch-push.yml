@@ -134,7 +134,9 @@ jobs:
           ref: ${{ needs.lint-test.outputs.new_sha }}
           fetch-depth: 0
       - name: test
-        run: echo $GITHUB_REF | awk -F / '{print $3}'
+        run: |
+          echo $GITHUB_REF
+          echo $GITHUB_REF | awk -F / '{print $3}'
 
       - name: Setting branch name variable
         run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
