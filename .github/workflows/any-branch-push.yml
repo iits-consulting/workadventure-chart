@@ -48,12 +48,12 @@ jobs:
           find: "version:.*"
           replace: "version: ${{ steps.newtag.outputs.git_new_tag }}"
           include: Chart.yaml
-      - name: Commit and push changes
-        uses: EndBug/add-and-commit@v7
-        with:
-          add: Chart.yaml
-          message: "[Auto-update] version updated"
-          tag: ${{ steps.newtag.outputs.git_new_tag }}
+#      - name: Commit and push changes
+#        uses: EndBug/add-and-commit@v7
+#        with:
+#          add: Chart.yaml
+#          message: "[Auto-update] version updated"
+#          tag: ${{ steps.newtag.outputs.git_new_tag }}
       - name: Bump version and push tag
         uses: ChloePlanet/github-tag-action@master
         env:

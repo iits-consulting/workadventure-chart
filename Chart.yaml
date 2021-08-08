@@ -1,6 +1,7 @@
 apiVersion: v2
 name: workadventure
-version: 1.0.0-e04857fb0e
+version: 1.0.0-90378c8e40
 appVersion: v1.1.0
 description: A Helm chart for Kubernetes
 type: application
+
