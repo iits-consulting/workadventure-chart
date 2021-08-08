@@ -9,15 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Looking for any (major, minor or patch) label
-        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
-        with:
-          github-token: '${{ secrets.GITHUB_TOKEN }}'
-          valid-labels: "major, minor, patch"
-          pull-request-number: '${{ github.event.pull_request.number }}'
-#        uses: yogevbd/enforce-label-action@2.1.0
+#        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
 #        with:
-#          REQUIRED_LABELS_ANY: "major,minor,patch"
-#          REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['major','minor','patch']"
+#          github-token: '${{ secrets.GITHUB_TOKEN }}'
+#          valid-labels: "major, minor, patch"
+#          pull-request-number: '${{ github.event.pull_request.number }}'
+        uses: yogevbd/enforce-label-action@2.1.0
+        with:
+          REQUIRED_LABELS_ANY: "major,minor,patch"
+          REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['major','minor','patch']"
 
 #      - id: bump
 #        uses: zwaldowski/match-label-action@v1
