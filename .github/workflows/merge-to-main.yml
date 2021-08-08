@@ -7,31 +7,86 @@ on:
 
 jobs:
   release-stable:
+    name: Bumping new chart version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
       - name: get PR info
         id: pr_info
         uses: actions-ecosystem/action-get-merged-pull-request@v1.0.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - run: echo "${{ steps.pr_info.outputs.labels }}"
-
-      - uses: actions-ecosystem/action-get-latest-tag@v1
-        id: get-latest-tag
-
+      - name: Get Previous tag
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 1.0.0
+      - name: Get version
+        run: |
+          t=$(echo "${{ steps.previoustag.outputs.tag }}" | cut -d- -f1)
+          echo "CURRENT_VERSION=`echo ${t}`" >> $GITHUB_ENV
       - uses: actions-ecosystem/action-bump-semver@v1
         id: bump_semver
         with:
-          current_version: ${{ steps.get-latest-tag.outputs.tag }}
+          current_version: ${{ env.CURRENT_VERSION }}
           level: ${{ steps.pr_info.outputs.labels }}
-
       - run: echo "${{ steps.bump_semver.outputs.new_version }}"
+      - name: Find and replace version in Chart.yaml
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: "version:.*"
+          replace: "version: ${{ steps.bump_semver.outputs.new_version }}"
+          include: Chart.yaml
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: Chart.yaml
+          message: "[Auto-update] version updated"
+          tag: ${{ steps.bump_semver.outputs.new_version }}
+      - name: Bump version and push tag
+        uses: ChloePlanet/github-tag-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CUSTOM_TAG: ${{ steps.bump_semver.outputs.new_version }}
+      - name: get sha
+        id: sha
+        run: |
+          sha_new=$(git rev-parse HEAD)
+          echo $sha_new
+          echo "::set-output name=sha::$sha_new"
+          echo "::set-output name=git_new_tag::${{ steps.bump_semver.outputs.new_version }}"
+
+    outputs:
+      new_sha: ${{ steps.sha.outputs.sha }}
+      new_tag: ${{ steps.newtag.outputs.git_new_tag }}
+
+  make-external-pr:
+    needs: [release-stable]
+    name: Release stable chart to ACR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.lint.outputs.new_sha }}
+          fetch-depth: 0
+      - name: Setting branch name variable
+        run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
+      - name: Install helm
+        uses: Azure/setup-helm@v1.1
+      - name: Login to ACR using helm
+        run: |
+          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
+      - name: Save helm chart to locally
+        run: |
+          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
+      - name: Publish chart to the ACR
+        run: |
+          helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
+
 
 #      - id: bump
 #        uses: zwaldowski/match-label-action@v1
