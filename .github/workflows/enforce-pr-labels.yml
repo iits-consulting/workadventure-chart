@@ -13,24 +13,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Looking for any (major, minor or patch) label
-#        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
-#        with:
-#          github-token: '${{ secrets.GITHUB_TOKEN }}'
-#          valid-labels: "major, minor, patch"
-#          pull-request-number: '${{ github.event.pull_request.number }}'
         uses: yogevbd/enforce-label-action@2.1.0
         with:
           REQUIRED_LABELS_ANY: "major,minor,patch"
           REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['major','minor','patch']"
-
-#      - id: bump
-#        uses: zwaldowski/match-label-action@v1
-#        with:
-#          allowed: major,minor,patch
-#
-#      - uses: zwaldowski/semver-release-action@v1
-#        id: next_version
-#        with:
-#          bump: ${{ steps.bump.outputs.match }}
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#      - run: echo "${{ steps.next_version.outputs.version }}"

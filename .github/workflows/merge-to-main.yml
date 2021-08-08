@@ -1,4 +1,4 @@
-name: Merge to the main
+name: Merge stable and release
 
 on:
   push:
@@ -12,14 +12,14 @@ env:
 
 jobs:
   release-stable:
-    name: Bumping new chart version
+    name: Release new chart version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: get PR info
+      - name: Get PR info
         id: pr_info
         uses: actions-ecosystem/action-get-merged-pull-request@v1.0.1
         with:
@@ -29,16 +29,16 @@ jobs:
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
           fallback: 1.0.0
-      - name: Get version
+      - name: Put new version to the ENV
         run: |
           t=$(echo "${{ steps.previoustag.outputs.tag }}" | cut -d- -f1)
           echo "CURRENT_VERSION=`echo ${t}`" >> $GITHUB_ENV
-      - uses: actions-ecosystem/action-bump-semver@v1
+      - name: Calculate new version
+        uses: actions-ecosystem/action-bump-semver@v1
         id: bump_semver
         with:
           current_version: ${{ env.CURRENT_VERSION }}
           level: ${{ steps.pr_info.outputs.labels }}
-      - run: echo "${{ steps.bump_semver.outputs.new_version }}"
       - name: Find and replace version in Chart.yaml
         uses: jacobtomlinson/gha-find-replace@master
         with:
@@ -56,7 +56,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CUSTOM_TAG: ${{ steps.bump_semver.outputs.new_version }}
-      - name: get sha
+      - name: Put variables to the outputs
         id: sha_and_tag
         run: |
           sha_new=$(git rev-parse HEAD)
@@ -70,7 +70,7 @@ jobs:
 
   make-external-pr:
     needs: [release-stable]
-    name: Release stable chart to ACR
+    name: Release stable chart to the ACR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -78,8 +78,6 @@ jobs:
         with:
           ref: ${{ needs.release-stable.outputs.new_sha }}
           fetch-depth: 0
-      - name: Setting branch name variable
-        run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
       - name: Install helm
         uses: Azure/setup-helm@v1.1
       - name: Login to ACR using helm
@@ -91,17 +89,3 @@ jobs:
       - name: Publish chart to the ACR
         run: |
           helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.release-stable.outputs.new_tag }}
-
-
-#      - id: bump
-#        uses: zwaldowski/match-label-action@v1
-#        with:
-#          allowed: major,minor,patch
-#
-#      - uses: zwaldowski/semver-release-action@v1
-#        id: next_version
-#        with:
-#          dry_run: true
-#          bump: ${{ steps.bump.outputs.match }}
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#      - run: echo "${{ steps.next_version.outputs.version }}"
