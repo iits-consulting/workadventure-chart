@@ -17,6 +17,8 @@ jobs:
       - name: get PR info
         id: pr_info
         uses: actions-ecosystem/action-get-merged-pull-request
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - run: echo "${{ steps.pr_info.outputs.labels }}"
 
