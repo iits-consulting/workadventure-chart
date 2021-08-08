@@ -53,7 +53,7 @@ jobs:
             exit 1
           fi
           echo "NEW_TAG=$(echo "$ct-${{ env.GIT_SHA_SHORT }}")" >> $GITHUB_ENV
-          echo "::set-output name=git_new_tag::${NEW_TAG}"
+          echo "::set-output name=git_new_tag::$ct-${{ env.GIT_SHA_SHORT }}"
 
       - name: check version
         run: |
