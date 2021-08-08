@@ -1,4 +1,4 @@
-name: Lint and make PR's
+name: Lint, PR, pre-Release
 
 on:
   push:
@@ -33,38 +33,49 @@ jobs:
           echo "::set-output name=git_pr_sha_short::${GIT_PR_SHA_SHORT}"
           echo "GIT_SHA_SHORT=`echo ${GIT_PR_SHA_SHORT}`" >> $GITHUB_ENV
 
-      - name: Get new tag
-        id: newtag
-        run: |
-          ct=$(cat Chart.yaml | tr -d " " | grep -oP '(?<=version:)\d+\.\d+\.\d+')
-          if [[ -z $ct ]]
-          then
-            echo "ERROR: Check your chart version in Chart.yaml file!!!"
-            echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
-            exit 1
-          fi
-          echo "::set-output name=git_new_tag::$ct-${{ env.GIT_SHA_SHORT }}"
-
-
-      - name: Find and replace version in Chart.yaml
-        uses: jacobtomlinson/gha-find-replace@master
+      - id: bump
+        uses: zwaldowski/match-label-action@v1
         with:
-          find: "version:.*"
-          replace: "version: ${{ steps.newtag.outputs.git_new_tag }}"
-          include: Chart.yaml
-
-      - name: Commit and push changes
-        uses: EndBug/add-and-commit@v7
+          allowed: major,minor,patch
+      - uses: zwaldowski/semver-release-action@v1
+        id: next_version
         with:
-          add: Chart.yaml
-          message: "[Auto-update] version updated"
-          tag: ${{ steps.newtag.outputs.git_new_tag }}
-
-      - name: Bump version and push tag
-        uses: ChloePlanet/github-tag-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_TAG: ${{ steps.newtag.outputs.git_new_tag }}
+          bump: ${{ steps.bump.outputs.match }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "${{ steps.next_version.outputs.version }}"
+#
+#      - name: Get new tag
+#        id: newtag
+#        run: |
+#          ct=$(cat Chart.yaml | tr -d " " | grep -oP '(?<=version:)\d+\.\d+\.\d+')
+#          if [[ -z $ct ]]
+#          then
+#            echo "ERROR: Check your chart version in Chart.yaml file!!!"
+#            echo "It should have SemVer numbers and be processed by '(?<=version:)\d+\.\d+\.\d+' regexp"
+#            exit 1
+#          fi
+#          echo "::set-output name=git_new_tag::$ct-${{ env.GIT_SHA_SHORT }}"
+#
+#
+#      - name: Find and replace version in Chart.yaml
+#        uses: jacobtomlinson/gha-find-replace@master
+#        with:
+#          find: "version:.*"
+#          replace: "version: ${{ steps.newtag.outputs.git_new_tag }}"
+#          include: Chart.yaml
+#
+#      - name: Commit and push changes
+#        uses: EndBug/add-and-commit@v7
+#        with:
+#          add: Chart.yaml
+#          message: "[Auto-update] version updated"
+#          tag: ${{ steps.newtag.outputs.git_new_tag }}
+#
+#      - name: Bump version and push tag
+#        uses: ChloePlanet/github-tag-action@master
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          CUSTOM_TAG: ${{ steps.newtag.outputs.git_new_tag }}
 
       - name: get sha
         id: sha
