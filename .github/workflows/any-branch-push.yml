@@ -33,16 +33,27 @@ jobs:
           echo "::set-output name=git_pr_sha_short::${GIT_PR_SHA_SHORT}"
           echo "GIT_SHA_SHORT=`echo ${GIT_PR_SHA_SHORT}`" >> $GITHUB_ENV
 
-      - id: bump
-        uses: zwaldowski/match-label-action@v1
+      - name: Looking for any (major, minor or patch) label
+        id: test_label
+        uses: yogevbd/enforce-label-action@2.1.0
         with:
-          allowed: major,minor,patch
-      - uses: zwaldowski/semver-release-action@v1
-        id: next_version
-        with:
-          bump: ${{ steps.bump.outputs.match }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "${{ steps.next_version.outputs.version }}"
+          REQUIRED_LABELS_ANY: "major,minor,patch"
+          REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['major','minor','patch']"
+
+      - run: echo ${{ steps.test_label.outputs }}
+
+#      - id: bump
+#        uses: zwaldowski/match-label-action@v1
+#        with:
+#          allowed: major,minor,patch
+#
+#
+#      - uses: zwaldowski/semver-release-action@v1
+#        id: next_version
+#        with:
+#          bump: ${{ steps.bump.outputs.match }}
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#      - run: echo "${{ steps.next_version.outputs.version }}"
 #
 #      - name: Get new tag
 #        id: newtag
