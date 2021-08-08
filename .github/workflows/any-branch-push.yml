@@ -135,7 +135,7 @@ jobs:
           fetch-depth: 0
       - name: test
         run: |
-          echo $GITHUB_REF
+          echo ${{ github.event.repository.name }}
           echo $GITHUB_REF | awk -F / '{print $3}'
 
       - name: Setting branch name variable
