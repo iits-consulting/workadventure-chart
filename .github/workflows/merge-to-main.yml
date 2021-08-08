@@ -9,6 +9,7 @@ env:
   HELM_EXPERIMENTAL_OCI: 1
   ACR_NAME: iitsc
   ACR_USER_NAME: iits-releaser
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 jobs:
   release-stable:
@@ -89,3 +90,15 @@ jobs:
       - name: Publish chart to the ACR
         run: |
           helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.release-stable.outputs.new_tag }}
+
+      - name: Build notification
+        if: always()
+        uses: adamkdean/simple-slack-notify@master
+        with:
+          channel: '#builds'
+          status: ${{ job.status }}
+          success_text: 'Build (#${env.GITHUB_RUN_NUMBER}) completed successfully'
+          failure_text: 'Build (#${env.GITHUB_RUN_NUMBER}) failed'
+          cancelled_text: 'Build (#${env.GITHUB_RUN_NUMBER}) was cancelled'
+          fields: |
+            [{ "title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]
