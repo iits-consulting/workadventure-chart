@@ -76,73 +76,73 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          CUSTOM_TAG: ${{ steps.newtag.outputs.git_new_tag }}
-
-      - name: get sha
-        id: sha
-        run: |
-          sha_new=$(git rev-parse HEAD)
-          echo $sha_new
-          echo "::set-output name=sha::$sha_new"
-      - name: CHECKING  NEW TAG
-        run: |
-          echo ${{ steps.sha.outputs.SHA }}
-          echo ${{ steps.newtag.outputs.git_new_tag }}
-
-    outputs:
-      git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
-      git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
-      new_sha: ${{ steps.sha.outputs.sha }}
-      new_tag: ${{ steps.newtag.outputs.git_new_tag }}
-
-  make-local-pr:
-    needs: [lint-test]
-    name: Make/Update local PR
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
-
-      - name: Make/Update local PR
-        uses: repo-sync/pull-request@v2
-        with:
-          destination_branch: "main"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "Pulling ${{ env.GITHUB_EVENT_REF_SLUG }} into main"
-          pr_template: ".github/pull_request_template.md"
-          pr_reviewer: "wei,worker"
-          pr_label: "auto-pr"
-
-  make-external-pr:
-    needs: [lint-test]
-    name: Release chart to ACR
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ needs.lint-test.outputs.new_sha }}
-          fetch-depth: 0
-
-      - name: Setting branch name variable
-        run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
-
-      - name: Install helm
-        uses: Azure/setup-helm@v1.1
-
-      - name: Login to ACR using helm
-        run: |
-          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
-
-      - name: Save helm chart to locally
-        run: |
-          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/${{ github.event.repository.name }}:${{ needs.lint-test.outputs.new_tag }}
-
-      - name: Publish chart to the ACR
-        run: |
-          helm chart push ${{ env.ACR_NAME }}.azurecr.io/${{ github.event.repository.name }}:${{ needs.lint-test.outputs.new_tag }}
+#
+#      - name: get sha
+#        id: sha
+#        run: |
+#          sha_new=$(git rev-parse HEAD)
+#          echo $sha_new
+#          echo "::set-output name=sha::$sha_new"
+#      - name: CHECKING  NEW TAG
+#        run: |
+#          echo ${{ steps.sha.outputs.SHA }}
+#          echo ${{ steps.newtag.outputs.git_new_tag }}
+#
+#    outputs:
+#      git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
+#      git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
+#      new_sha: ${{ steps.sha.outputs.sha }}
+#      new_tag: ${{ steps.newtag.outputs.git_new_tag }}
+#
+#  make-local-pr:
+#    needs: [lint-test]
+#    name: Make/Update local PR
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Inject slug/short variables
+#        uses: rlespinasse/github-slug-action@v3.x
+#
+#      - name: Make/Update local PR
+#        uses: repo-sync/pull-request@v2
+#        with:
+#          destination_branch: "main"
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          pr_title: "Pulling ${{ env.GITHUB_EVENT_REF_SLUG }} into main"
+#          pr_template: ".github/pull_request_template.md"
+#          pr_reviewer: "wei,worker"
+#          pr_label: "auto-pr"
+#
+#  make-external-pr:
+#    needs: [lint-test]
+#    name: Release chart to ACR
+#    runs-on: ubuntu-latest
+#    steps:
+#
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          ref: ${{ needs.lint-test.outputs.new_sha }}
+#          fetch-depth: 0
+#
+#      - name: Setting branch name variable
+#        run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
+#
+#      - name: Install helm
+#        uses: Azure/setup-helm@v1.1
+#
+#      - name: Login to ACR using helm
+#        run: |
+#          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
+#
+#      - name: Save helm chart to locally
+#        run: |
+#          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/${{ github.event.repository.name }}:${{ needs.lint-test.outputs.new_tag }}
+#
+#      - name: Publish chart to the ACR
+#        run: |
+#          helm chart push ${{ env.ACR_NAME }}.azurecr.io/${{ github.event.repository.name }}:${{ needs.lint-test.outputs.new_tag }}
