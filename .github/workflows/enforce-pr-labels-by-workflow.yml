@@ -1,14 +1,21 @@
-name: Enforce PR labels (major, minor or patch)
+name: Enforce PR labels (major, minor or patch) after build
 
 on:
-  pull_request:
-    types: [labeled, unlabeled, opened, edited, synchronize]
+  workflow_run:
+    workflows: ["Lint, PR, pre-Release"]
+    types: [completed]
+
 jobs:
   enforce-label:
     name: Labels check
     runs-on: ubuntu-latest
     steps:
       - name: Looking for any (major, minor or patch) label
+#        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
+#        with:
+#          github-token: '${{ secrets.GITHUB_TOKEN }}'
+#          valid-labels: "major, minor, patch"
+#          pull-request-number: '${{ github.event.pull_request.number }}'
         uses: yogevbd/enforce-label-action@2.1.0
         with:
           REQUIRED_LABELS_ANY: "major,minor,patch"
