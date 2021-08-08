@@ -43,7 +43,7 @@ jobs:
 #          CHART_LOCATION: .
 
       - name: Get new tag
-        id: newTagStep
+        id: newtag
         run: |
           ct=$(cat Chart.yaml | tr -d " " | grep -oP '(?<=version:)\d+\.\d+\.\d+')
           if [[ -z $ct ]]
@@ -93,7 +93,7 @@ jobs:
       git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
       git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
       new_sha: ${{ steps.sha.outputs.sha }}
-      new_tag: ${{ steps.sha.outputs.git_new_tag }}
+      new_tag: ${{ steps.newtag.outputs.git_new_tag }}
 
   make-local-pr:
     needs: [lint-test]
