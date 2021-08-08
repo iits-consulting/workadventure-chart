@@ -86,8 +86,10 @@ jobs:
           sha_new=$(git rev-parse HEAD)
           echo $sha_new
           echo "::set-output name=sha::$sha_new"
-      - run:
+      - name: CHECKING  NEW TAG
+        run: |
           echo ${{ steps.sha.outputs.SHA }}
+          echo ${{ steps.newtag.outputs.git_new_tag }}
 
     outputs:
       git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
