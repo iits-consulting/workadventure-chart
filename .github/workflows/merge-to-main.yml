@@ -95,7 +95,7 @@ jobs:
         if: always()
         uses: adamkdean/simple-slack-notify@master
         with:
-          channel: '#builds'
+          channel: '#notifications-charts'
           status: ${{ job.status }}
           success_text: 'Build (#${env.GITHUB_RUN_NUMBER}) completed successfully'
           failure_text: 'Build (#${env.GITHUB_RUN_NUMBER}) failed'
