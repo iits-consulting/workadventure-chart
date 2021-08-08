@@ -57,16 +57,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CUSTOM_TAG: ${{ steps.bump_semver.outputs.new_version }}
       - name: get sha
-        id: sha
+        id: sha_and_tag
         run: |
           sha_new=$(git rev-parse HEAD)
           echo $sha_new
           echo "::set-output name=sha::$sha_new"
-          echo "::set-output name=git_new_tag::${{ steps.bump_semver.outputs.new_version }}"
+          echo "::set-output name=tag::${{ steps.bump_semver.outputs.new_version }}"
 
     outputs:
-      new_sha: ${{ steps.sha.outputs.sha }}
-      new_tag: ${{ steps.newtag.outputs.git_new_tag }}
+      new_sha: ${{ steps.sha_and_tag.outputs.sha }}
+      new_tag: ${{ steps.sha_and_tag.outputs.tag }}
 
   make-external-pr:
     needs: [release-stable]
