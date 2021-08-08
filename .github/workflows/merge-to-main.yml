@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+env:
+  HELM_EXPERIMENTAL_OCI: 1
+  ACR_NAME: iitsc
+  ACR_USER_NAME: iits-releaser
+
 jobs:
   release-stable:
     name: Bumping new chart version
