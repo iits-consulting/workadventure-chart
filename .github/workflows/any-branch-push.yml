@@ -9,6 +9,13 @@ on:
     branches-ignore:
       - main
 
+env:
+  HELM_EXPERIMENTAL_OCI: 1
+  HELM_VERSION_TO_INSTALL: 3.5.0
+  ACR_NAME: iitscharts
+  ACR_REPO_NAME: workadventure
+  ACR_USER_NAME: iits-releaser
+
 jobs:
   lint-test:
     name: Lint and update chart version
@@ -46,6 +53,7 @@ jobs:
             exit 1
           fi
           echo "NEW_TAG=$(echo "$ct+${{ env.GIT_SHA_SHORT }}")" >> $GITHUB_ENV
+          echo "::set-output name=git_new_tag::${NEW_TAG}"
 
       - name: check version
         run: |
@@ -85,6 +93,7 @@ jobs:
       git_pr_sha: ${{ steps.identify.outputs.git_pr_sha }}
       git_pr_sha_short: ${{ steps.identify.outputs.git_pr_sha_short }}
       new_sha: ${{ steps.sha.outputs.sha }}
+      new_tag: ${{ steps.sha.outputs.git_new_tag }}
 
   make-local-pr:
     needs: [lint-test]
@@ -126,27 +135,46 @@ jobs:
       - name: Setting branch name variable
         run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
 
-      - name: TEMP check chart version
-        run: |
-          echo ${{ env.BRANCH_NAME }}
-          cat Chart.yaml
-
-      - name: pull-request-repo
-        uses: iits-consulting/action-pull-request-another-repo@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
+      - name: install helm
+        uses: Azure/setup-helm@v1
         with:
-          source_folder: .
-          destination_repo: 'iits-consulting/helm-charts'
-          destination_folder: 'charts'
-          destination_base_branch: master
-          destination_head_branch: ${{ env.BRANCH_NAME }}
+          version: ${{ env.HELM_VERSION_TO_INSTALL }}# default is latest
+
+      - name: login to acr using helm
+        run: |
+          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
+
+      - name: save helm chart to local registry
+        run: |
+          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/workadventure:${{ needs.lint-test.outputs.new_tag }}
+
+      - name: publish chart to acr
+        run: |
+          helm chart push ${{ env.ACR_NAME }}.azurecr.io/workadventure:${{ needs.lint-test.outputs.new_tag }}
+
+
+#
+#      - name: TEMP check chart version
+#        run: |
+#          echo ${{ env.BRANCH_NAME }}
+#          cat Chart.yaml
+#
+#      - name: pull-request-repo
+#        uses: iits-consulting/action-pull-request-another-repo@main
+#        env:
+#          API_TOKEN_GITHUB: ${{ secrets.DLAVRUSHKO_PERSONAL_ACCESS_TOKEN }}
+#        with:
+#          source_folder: .
+#          destination_repo: 'iits-consulting/helm-charts'
+#          destination_folder: 'charts'
+#          destination_base_branch: master
+#          destination_head_branch: ${{ env.BRANCH_NAME }}
 ######################
 ######################
 ######################
-          user_email: 'denis.lavrushko@iits-consulting.de'
-          user_name: 'dlavrushk0'
-          labels: 'auto-deployed, chartName=workadventure'
+#          user_email: 'denis.lavrushko@iits-consulting.de'
+#          user_name: 'dlavrushk0'
+#          labels: 'auto-deployed, chartName=workadventure'
 ####################
 ####################
 ####################
