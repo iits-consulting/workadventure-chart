@@ -1,9 +1,9 @@
 name: Merge to the main
 
-on: workflow_dispatch
-#  push:
-#    branches:
-#      - main
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   release-stable:
@@ -14,15 +14,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - id: bump
-        uses: zwaldowski/match-label-action@v1
+      - name: get PR info
+        id: pr_info
+        uses: actions-ecosystem/action-get-merged-pull-request
         with:
-          allowed: major,minor,patch
-
-      - uses: zwaldowski/semver-release-action@v1
-        id: next_version
-        with:
-          dry_run: true
-          bump: ${{ steps.bump.outputs.match }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "${{ steps.next_version.outputs.version }}"
+
+      - run: echo "${{ steps.pr_info.outputs.labels }}"
+
+#      - id: bump
+#        uses: zwaldowski/match-label-action@v1
+#        with:
+#          allowed: major,minor,patch
+#
+#      - uses: zwaldowski/semver-release-action@v1
+#        id: next_version
+#        with:
+#          dry_run: true
+#          bump: ${{ steps.bump.outputs.match }}
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#      - run: echo "${{ steps.next_version.outputs.version }}"
