@@ -120,7 +120,7 @@ jobs:
 
   make-external-pr:
     needs: [lint-test]
-    name: Make/Update external PR
+    name: Release chart to ACR
     runs-on: ubuntu-latest
     steps:
       - name: TEMP test ref
@@ -136,9 +136,7 @@ jobs:
         run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
 
       - name: install helm
-        uses: Azure/setup-helm@v1
-        with:
-          version: ${{ env.HELM_VERSION_TO_INSTALL }}# default is latest
+        uses: Azure/setup-helm@v1.1
 
       - name: login to acr using helm
         run: |
