@@ -108,17 +108,11 @@ jobs:
         run: |
           echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
       - name: Retrieve slack message success template
-        if: ${{ success() }}
-        id: slack_template
-        run: echo SLACK_MESSAGE=$(cat .github/success_slack_message.tmpl) >> $GITHUB_ENV
-      - name: Retrieve slack message failed template
-        if: ${{ failure() }}
-        id: slack_template
-        run: echo SLACK_MESSAGE=$(cat .github/failed_slack_message.tmpl) >> $GITHUB_ENV
-      - name: Retrieve slack message canceled template
-        if: ${{ cancelled() }}
-        id: slack_template
-        run: echo SLACK_MESSAGE=$(cat .github/canceled_slack_message.tmpl) >> $GITHUB_ENV
+        run: echo SLACK_MESSAGE_SUCCESS=$(cat .github/successed_slack_message.tmpl) >> $GITHUB_ENV
+      - name: Retrieve slack message fail template
+        run: echo SLACK_MESSAGE_FAILURE=$(cat .github/failed_slack_message.tmpl) >> $GITHUB_ENV
+      - name: Retrieve slack message abort template
+        run: echo SLACK_MESSAGE_ABORT=$(cat .github/aborted_slack_message.tmpl) >> $GITHUB_ENV
       - name: TEST template variable
         run: echo ${{ env.MY_STRING }}
 
@@ -133,9 +127,26 @@ jobs:
       - name: Publish chart to the ACR
         run: |
           helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
-      - name: Notify slack
+
+
+      - name: Notify slack success
+        if: ${{ success() }}
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: pullreminders/slack-action@master
         with:
-          args: ${{ env.SLACK_MESSAGE }}
+          args: ${{ env.SLACK_MESSAGE_SUCCESS }}
+      - name: Notify slack failure
+        if: ${{ failure() }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: pullreminders/slack-action@master
+        with:
+          args: ${{ env.SLACK_MESSAGE_FAILURE }}
+      - name: Notify slack aborted
+        if: ${{ cancelled() }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: pullreminders/slack-action@master
+        with:
+          args: ${{ env.SLACK_MESSAGE_ABORT }}
