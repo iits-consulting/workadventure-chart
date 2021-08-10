@@ -1,7 +1,6 @@
 #!/bin/bash
 
 function usage(){
-
   echo "This script replaces variables in slack messages json templates."
   echo ""
   echo -e "\t-h --help"
@@ -18,7 +17,7 @@ function replace() {
   sed -e "s/REPLACEME_REPO_LINK/${CHART_LINK}/" ${TEMPLATE_FILE}
   sed -e "s/REPLACEME_GITHUB_ACTION_LINK/${ACTION_LINK}/" ${TEMPLATE_FILE}
 
-  echo SLACK_MESSAGE_SUCCESS=$(jq -c . successed_slack_message.json | sed 's/"/\\"/g') >> $GITHUB_ENV
+  echo SLACK_MESSAGE_SUCCESS=$(jq -c . success_slack_message.json | sed 's/"/\\"/g') >> $GITHUB_ENV
   echo SLACK_MESSAGE_FAILURE=$(jq -c . failed_slack_message.json | sed 's/"/\\"/g') >> $GITHUB_ENV
   echo SLACK_MESSAGE_ABORT=$(jq -c . aborted_slack_message.json | sed 's/"/\\"/g') >> $GITHUB_ENV
 }

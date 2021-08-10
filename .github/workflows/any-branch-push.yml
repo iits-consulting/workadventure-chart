@@ -109,7 +109,7 @@ jobs:
           echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
 
       #      - name: Retrieve slack message success template
-#        run: echo SLACK_MESSAGE_SUCCESS=$(jq -c . .github/successed_slack_message.json | sed 's/"/\\"/g') >> $GITHUB_ENV
+#        run: echo SLACK_MESSAGE_SUCCESS=$(jq -c . .github/success_slack_message.json | sed 's/"/\\"/g') >> $GITHUB_ENV
 #      - name: Retrieve slack message fail template
 #        run: echo SLACK_MESSAGE_FAILURE=$(cat .github/failed_slack_message.json) >> $GITHUB_ENV
 #      - name: Retrieve slack message abort template
@@ -128,24 +128,37 @@ jobs:
 #          helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
 
 
-      - name: Replace template variables
-        if: ${{ success() }}
-        run: |
-          bash .github/replace_variables.sh --type=success --chart-name=${{ github.event.repository.name }} \
-          --chart-version=${{ needs.lint.outputs.new_tag }} --chart-link="https://google.com" --action-link="https://google.com"
-      - name: Replace template variables
-        if: ${{ failure() }}
-        run: |
-          bash .github/replace_variables.sh --type=failed--chart-name=${{ github.event.repository.name }} \
-          --chart-version=${{ needs.lint.outputs.new_tag }} --chart-link="https://google.com" --action-link="https://google.com"
+#      - name: Replace template variables
+#        if: ${{ success() }}
+#        run: |
+#          bash .github/replace_variables.sh --type=success --chart-name=${{ github.event.repository.name }} \
+#          --chart-version=${{ needs.lint.outputs.new_tag }} --chart-link="https://google.com" --action-link="https://google.com"
+#      - name: Replace template variables
+#        if: ${{ failure() }}
+#        run: |
+#          bash .github/replace_variables.sh --type=failed--chart-name=${{ github.event.repository.name }} \
+#          --chart-version=${{ needs.lint.outputs.new_tag }} --chart-link="https://google.com" --action-link="https://google.com"
+#
+#      - name: Replace template variables
+#        if: ${{ cancelled() }}
+#        run: |
+#          bash .github/replace_variables.sh --type=aborted--chart-name=${{ github.event.repository.name }} \
+#          --chart-version=${{ needs.lint.outputs.new_tag }} --chart-link="https://google.com" --action-link="https://google.com"
+#      - name: TEST message templates
+#        run: cat ./github/success_slack_message.json
 
-      - name: Replace template variables
-        if: ${{ cancelled() }}
-        run: |
-          bash .github/replace_variables.sh --type=aborted--chart-name=${{ github.event.repository.name }} \
-          --chart-version=${{ needs.lint.outputs.new_tag }} --chart-link="https://google.com" --action-link="https://google.com"
-      - name: TEST message templates
-        run: cat ./github/successed_slack_message.json
+      - name: TEST Notify slack success
+        if: ${{ success() }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: iits-consulting/slack-action@master
+        with:
+          channel-id: C02AJKXC8UT
+          payload-file-dest: "success_slack_message.json"
+          chart-name: ${{ github.event.repository.name }}
+          chart-version: ${{ needs.lint.outputs.new_tag }}
+          chart-link: "https://google.com"
+          action-link: "https://google.com"
 
 #      - name: Notify slack success
 #        if: ${{ success() }}
