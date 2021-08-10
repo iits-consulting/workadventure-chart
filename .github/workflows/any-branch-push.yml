@@ -155,6 +155,9 @@ jobs:
         with:
           channel_id: "C02AJKXC8UT"
           payload_file: "success_slack_message.json"
+          replaceme_1: x
+          replaceme_2: y
+          replaceme_3: z
 
 #      - name: Notify slack success
 #        if: ${{ success() }}
