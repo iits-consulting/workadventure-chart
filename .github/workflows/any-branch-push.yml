@@ -147,6 +147,7 @@ jobs:
 #          args: '{\"channel\":\"C02AJKXC8UT\",\"text\":\"Hello world\"}'
           args:
             '{
+              \"channel\":\"C02AJKXC8UT\",
               \"blocks\": [
                 {
                   \"type\": \"section\",
