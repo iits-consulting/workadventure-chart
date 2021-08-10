@@ -108,7 +108,7 @@ jobs:
         run: |
           echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
       - name: Retrieve slack message success template
-        run: echo SLACK_MESSAGE_SUCCESS=$(jq -c . .github/successed_slack_message.json) >> $GITHUB_ENV
+        run: echo SLACK_MESSAGE_SUCCESS=$(jq -c . .github/successed_slack_message.json | sed 's/"/\\"/g') >> $GITHUB_ENV
       - name: Retrieve slack message fail template
         run: echo SLACK_MESSAGE_FAILURE=$(cat .github/failed_slack_message.json) >> $GITHUB_ENV
       - name: Retrieve slack message abort template
