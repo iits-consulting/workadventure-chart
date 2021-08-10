@@ -1,20 +1,18 @@
 {
-  "channel":"C02AJKXC8UT",
-  "color": "#36a64f",
   "attachments": [
     {
       "fallback": "Required plain-text summary of the attachment.",
       "color": "#36a64f",
       "pretext": "Optional text that appears above the attachment block",
-      "author_name": "REPLACEME_CHART_NAME",
-      "author_link": "REPLACEME_REPO_LINK",
+      "author_name": "REPLACEME_1",
+      "author_link": "REPLACEME_2",
       "title": "GitHub Action output",
-      "title_link": "REPLACEME_GITHUB_ACTION_LINK",
+      "title_link": "REPLACEME_3",
       "text": "New chart version released",
       "fields": [
         {
           "title": "Version:",
-          "value": "REPLACEME_CHART_VERSION",
+          "value": "REPLACEME_4",
           "short": false
         }
       ],

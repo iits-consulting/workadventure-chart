@@ -154,7 +154,7 @@ jobs:
         uses: iits-consulting/slack-action@master
         with:
           channel_id: "C02AJKXC8UT"
-          payload_file: "success_slack_message.json"
+          payload_file: ".github/success_slack_message.json"
           replaceme_1: x
           replaceme_2: y
           replaceme_3: z
