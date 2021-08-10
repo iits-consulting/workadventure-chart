@@ -109,7 +109,7 @@ jobs:
           echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
       - name: Retrieve slack message template
         id: slack_template
-        run: echo "MY_STRING=$(cat .github/success_slack_message.tmpl) >> $GITHUB_ENV
+        run: echo MY_STRING=$(cat .github/success_slack_message.tmpl) >> $GITHUB_ENV
       - name: TEST template variable
         run: echo ${{ env.MY_STRING }}
 #      - name: Install helm
