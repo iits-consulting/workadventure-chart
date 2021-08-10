@@ -135,14 +135,14 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: pullreminders/slack-action@master
         with:
-          args: ${{ env.SLACK_MESSAGE_SUCCESS }}
+          args: '${{ env.SLACK_MESSAGE_SUCCESS }}'
       - name: Notify slack failure
         if: ${{ failure() }}
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: pullreminders/slack-action@master
         with:
-          args: ${{ env.SLACK_MESSAGE_FAILURE }}
+          args: '${{ env.SLACK_MESSAGE_FAILURE }}'
       - name: Notify slack aborted
         if: ${{ cancelled() }}
         env:
