@@ -107,47 +107,64 @@ jobs:
       - name: Setting branch name variable
         run: |
           echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
-      - name: Retrieve slack message success template
-        run: echo SLACK_MESSAGE_SUCCESS=$(jq -c . .github/successed_slack_message.json | sed 's/"/\\"/g') >> $GITHUB_ENV
-      - name: Retrieve slack message fail template
-        run: echo SLACK_MESSAGE_FAILURE=$(cat .github/failed_slack_message.json) >> $GITHUB_ENV
-      - name: Retrieve slack message abort template
-        run: echo SLACK_MESSAGE_ABORT=$(cat .github/aborted_slack_message.json) >> $GITHUB_ENV
-      - name: TEST template variable
-        run: echo ${{ env.MY_STRING }}
 
-      - name: Install helm
-        uses: Azure/setup-helm@v1.1
-      - name: Login to the ACR using helm
-        run: |
-          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
-      - name: Save helm chart to locally
-        run: |
-          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
-      - name: Publish chart to the ACR
-        run: |
-          helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
+      #      - name: Retrieve slack message success template
+#        run: echo SLACK_MESSAGE_SUCCESS=$(jq -c . .github/successed_slack_message.json | sed 's/"/\\"/g') >> $GITHUB_ENV
+#      - name: Retrieve slack message fail template
+#        run: echo SLACK_MESSAGE_FAILURE=$(cat .github/failed_slack_message.json) >> $GITHUB_ENV
+#      - name: Retrieve slack message abort template
+#        run: echo SLACK_MESSAGE_ABORT=$(cat .github/aborted_slack_message.json) >> $GITHUB_ENV
+
+#      - name: Install helm
+#        uses: Azure/setup-helm@v1.1
+#      - name: Login to the ACR using helm
+#        run: |
+#          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
+#      - name: Save helm chart to locally
+#        run: |
+#          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
+#      - name: Publish chart to the ACR
+#        run: |
+#          helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
 
 
-      - name: Notify slack success
+      - name: Replace template variables
         if: ${{ success() }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: pullreminders/slack-action@master
-        with:
-#          args: '{\"channel\":\"C02AJKXC8UT\",\"text\":\"Hello world\"}'
-          args: '${{ env.SLACK_MESSAGE_SUCCESS }}'
-      - name: Notify slack failure
+        run: |
+          bash .github/replace_variables.sh --type=success --chart-name=${{ github.event.repository.name }} \
+          --chart-version=${{ needs.lint.outputs.new_tag }} --chart-link="https://google.com" --action-link="https://google.com"
+      - name: Replace template variables
         if: ${{ failure() }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: pullreminders/slack-action@master
-        with:
-          args: '${{ env.SLACK_MESSAGE_FAILURE }}'
-      - name: Notify slack aborted
+        run: |
+          bash .github/replace_variables.sh --type=failed--chart-name=${{ github.event.repository.name }} \
+          --chart-version=${{ needs.lint.outputs.new_tag }} --chart-link="https://google.com" --action-link="https://google.com"
+
+      - name: Replace template variables
         if: ${{ cancelled() }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: pullreminders/slack-action@master
-        with:
-          args: '${{ env.SLACK_MESSAGE_ABORT }}'
+        run: |
+          bash .github/replace_variables.sh --type=aborted--chart-name=${{ github.event.repository.name }} \
+          --chart-version=${{ needs.lint.outputs.new_tag }} --chart-link="https://google.com" --action-link="https://google.com"
+      - name: TEST message templates
+        run: cat ./github/successed_slack_message.json
+
+#      - name: Notify slack success
+#        if: ${{ success() }}
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+#        uses: pullreminders/slack-action@master
+#        with:
+#          args: '${{ env.SLACK_MESSAGE_SUCCESS }}'
+#      - name: Notify slack failure
+#        if: ${{ failure() }}
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+#        uses: pullreminders/slack-action@master
+#        with:
+#          args: '${{ env.SLACK_MESSAGE_FAILURE }}'
+#      - name: Notify slack aborted
+#        if: ${{ cancelled() }}
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+#        uses: pullreminders/slack-action@master
+#        with:
+#          args: '${{ env.SLACK_MESSAGE_ABORT }}'

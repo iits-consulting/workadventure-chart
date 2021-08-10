@@ -1,56 +1,27 @@
 {
   "channel":"C02AJKXC8UT",
   "color": "#36a64f",
-  "blocks": [
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "SUCCESS"
-      }
-    },
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "This is a section block with a button."
-      },
-      "accessory": {
-        "type": "button",
-        "text": {
-          "type": "plain_text",
-          "text": "Click Me",
-          "emoji": true
-        },
-        "value": "click_me_123",
-        "url": "https://google.com",
-        "action_id": "button-action"
-      }
-    }
-  ],
   "attachments": [
     {
       "fallback": "Required plain-text summary of the attachment.",
       "color": "#36a64f",
       "pretext": "Optional text that appears above the attachment block",
-      "author_name": "Bobby Tables",
-      "author_link": "http://flickr.com/bobby/",
-      "author_icon": "http://flickr.com/icons/bobby.jpg",
-      "title": "Slack API Documentation",
-      "title_link": "https://api.slack.com/",
-      "text": "Optional text that appears within the attachment",
+      "author_name": "REPLACEME_CHART_NAME",
+      "author_link": "REPLACEME_REPO_LINK",
+      "title": "GitHub Action output",
+      "title_link": "REPLACEME_GITHUB_ACTION_LINK",
+      "text": "New chart version released",
       "fields": [
         {
-          "title": "Priority",
-          "value": "High",
+          "title": "Version:",
+          "value": "REPLACEME_CHART_VERSION",
           "short": false
         }
       ],
       "image_url": "http://my-website.com/path/to/image.jpg",
       "thumb_url": "http://example.com/path/to/thumb.png",
-      "footer": "Slack API",
-      "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-      "ts": 123456789
+      "footer": "IITS internal",
+      "footer_icon": "https://iits-consulting.de/wp-content/uploads/2020/09/iits-logo-1.png"
     }
   ]
 }
