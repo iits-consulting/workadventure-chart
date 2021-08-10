@@ -135,7 +135,7 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: pullreminders/slack-action@master
         with:
-          args: '{\"channel\":\"C1234567890\",\"text\":\"Hello world\"}'
+          args: '{\"channel\":\"C02AJKXC8UT\",\"text\":\"Hello world\"}'
 #          args: '${{ env.SLACK_MESSAGE_SUCCESS }}'
       - name: Notify slack failure
         if: ${{ failure() }}
