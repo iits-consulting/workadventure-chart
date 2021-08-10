@@ -25,12 +25,15 @@ function replace() {
 
 function select_file() {
   case ${TYPE} in
-    success
+    success)
       TEMPLATE_FILE="successed_slack_message.json"
-    failed
+      ;;
+    failed)
       TEMPLATE_FILE="failed_slack_message.json"
-    aborted
+      ;;
+    aborted)
       TEMPLATE_FILE="aborted_slack_message.json"
+      ;;
   esac
 }
 
