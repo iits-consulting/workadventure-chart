@@ -153,8 +153,8 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: iits-consulting/slack-action@master
         with:
-          channel-id: C02AJKXC8UT
-          payload-file-dest: "success_slack_message.json"
+          channel-id: "C02AJKXC8UT"
+          payload-file: "success_slack_message.json"
           chart-name: ${{ github.event.repository.name }}
           chart-version: ${{ needs.lint.outputs.new_tag }}
           chart-link: "https://google.com"
