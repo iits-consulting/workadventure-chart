@@ -84,8 +84,8 @@ jobs:
           channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/success_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}
-          replaceme_3: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
+          replaceme_2: ${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}
+          replaceme_3: ${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}/actions/runs/${{ GITHUB_RUN_ID }}
           replaceme_4: ${{ needs.lint.outputs.new_tag }}
       - name: Notify slack failed
         if: ${{ failure() }}
@@ -96,8 +96,8 @@ jobs:
           channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/failed_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}
-          replaceme_3: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
+          replaceme_2: ${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}
+          replaceme_3: ${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}/actions/runs/${{ GITHUB_RUN_ID }}
           replaceme_4: ${{ needs.lint.outputs.new_tag }}
       - name: Notify slack aborted
         if: ${{ cancelled() }}
@@ -108,6 +108,6 @@ jobs:
           channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/aborted_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}
-          replaceme_3: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
+          replaceme_2: ${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}
+          replaceme_3: ${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}/actions/runs/${{ GITHUB_RUN_ID }}
           replaceme_4: ${{ needs.lint.outputs.new_tag }}
