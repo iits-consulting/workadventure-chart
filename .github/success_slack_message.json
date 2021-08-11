@@ -3,16 +3,16 @@
     {
       "fallback": "Required plain-text summary of the attachment.",
       "color": "#36a64f",
-      "pretext": "Optional text that appears above the attachment block",
-      "author_name": "REPLACEME_1",
-      "author_link": "REPLACEME_2",
+      "pretext": "New version of your helm chart released",
+      "author_name": "replaceme_1",
+      "author_link": "replaceme_2",
       "title": "GitHub Action output",
-      "title_link": "REPLACEME_3",
+      "title_link": "replaceme_3",
       "text": "New chart version released",
       "fields": [
         {
           "title": "Version:",
-          "value": "REPLACEME_4",
+          "value": "replaceme_4",
           "short": false
         }
       ],

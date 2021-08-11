@@ -155,9 +155,10 @@ jobs:
         with:
           channel_id: "C02AJKXC8UT"
           payload_file: ".github/success_slack_message.json"
-          replaceme_1: x
-          replaceme_2: y
-          replaceme_3: z
+          replaceme_1: ${{ github.event.repository.name }}
+          replaceme_2: "https://google.com"
+          replaceme_3: "https://google.com"
+          replaceme_4: ${{ needs.lint.outputs.new_tag }}
 
 #      - name: Notify slack success
 #        if: ${{ success() }}
