@@ -23,6 +23,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - run: echo ${{ steps.pr_info.outputs.labels }}
+
       - name: Calculate new version
         uses: actions-ecosystem/action-bump-semver@v1
         id: bump_semver
