@@ -20,16 +20,47 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Get PR info
-        id: pr_info
-        uses: actions-ecosystem/action-get-merged-pull-request@v1.0.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Get PR info
+#        id: pr_info
+#        uses: actions-ecosystem/action-get-merged-pull-request@v1.0.1
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: TEST See result
-        run: |
-          python -c "type(${{ steps.pr_info.outputs }})"
-          python -c "print(${{ steps.pr_info.outputs }})"
+      - name: Check PR labels action step
+        id: check_pr_labels_major
+        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["major"]'
+      - name: See result
+        run: echo "${{ steps.check_pr_labels_major.outputs.result }}"
+
+      - name: Check PR labels action step
+        id: check_pr_labels_minor
+        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["minor"]'
+      - name: See result
+        run: echo "${{ steps.check_pr_labels_minor.outputs.result }}"
+
+      - name: Check PR labels action step
+        id: check_pr_labels_patch
+        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["patch"]'
+      - name: See result
+        run: echo "${{ steps.check_pr_labels_patch.outputs.result }}"
+
+      - name: Check PR labels action step
+        id: check_pr_labels
+        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["major", "minor", "patch"]'
+      - name: See result
+        run: echo "${{ steps.check_pr_labels.outputs.result }}"
 
 #      - name: Get Previous tag
 #        id: previoustag
