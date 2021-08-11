@@ -49,20 +49,15 @@ jobs:
 
       - name: Select proper label
         run: |
-          case "true" in
-            "${{ steps.check_pr_labels_major.outputs.result")
-              echo "CORRECT_LABEL=$(echo "major")" >> $GITHUB_ENV
-              ;;
-            "${{ steps.check_pr_labels_minor.outputs.result")
-              echo "CORRECT_LABEL=$(echo "minor")" >> $GITHUB_ENV
-              ;;
-            "${{ steps.check_pr_labels_patch.outputs.result")
-              echo "CORRECT_LABEL=$(echo "patch")" >> $GITHUB_ENV
-              ;;
-            *)
-              echo "CORRECT_LABEL=$(echo "patch")" >> $GITHUB_ENV
-              ;;
-          esac
+          if [[ "${{ steps.check_pr_labels_major.outputs.result" = true }} ]]; then
+            echo "CORRECT_LABEL=$(echo "major")" >> $GITHUB_ENV
+          elif [[ "${{ steps.check_pr_labels_minor.outputs.result" = true }} ]]; then
+            echo "CORRECT_LABEL=$(echo "minor")" >> $GITHUB_ENV
+          elif [[ "${{ steps.check_pr_labels_patch.outputs.result" = true }} ]]; then
+            echo "CORRECT_LABEL=$(echo "patch")" >> $GITHUB_ENV
+          else
+            echo "CORRECT_LABEL=$(echo "patch")" >> $GITHUB_ENV
+          fi
 
       - name: Get Previous tag
         id: previoustag
