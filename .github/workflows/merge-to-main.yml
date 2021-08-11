@@ -32,8 +32,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["major"]'
-      - name: See result
-        run: echo "${{ steps.check_pr_labels_major.outputs.result }}"
 
       - name: Check PR labels action step
         id: check_pr_labels_minor
@@ -41,8 +39,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["minor"]'
-      - name: See result
-        run: echo "${{ steps.check_pr_labels_minor.outputs.result }}"
 
       - name: Check PR labels action step
         id: check_pr_labels_patch
@@ -50,17 +46,15 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["patch"]'
-      - name: See result
-        run: echo "${{ steps.check_pr_labels_patch.outputs.result }}"
 
       - name: Select proper label
         run: |
           if [[ ${{ steps.check_pr_labels_major.outputs.result }} ]]; then
-            echo "CORRECT_LABEL=$(echo "major" >> $GITHUB_ENV
+            echo "CORRECT_LABEL=$(echo "major") >> $GITHUB_ENV
           elif [[ ${{ steps.check_pr_labels_minor.outputs.result }} ]]; then
-            echo "CORRECT_LABEL=$(echo "minor" >> $GITHUB_ENV
+            echo "CORRECT_LABEL=$(echo "minor") >> $GITHUB_ENV
           elif [[ ${{ steps.check_pr_labels_patch.outputs.result }} ]]; then
-            echo "CORRECT_LABEL=$(echo "patch" >> $GITHUB_ENV
+            echo "CORRECT_LABEL=$(echo "patch") >> $GITHUB_ENV
           fi
 
       - name: Get Previous tag
