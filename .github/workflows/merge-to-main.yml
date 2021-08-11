@@ -49,7 +49,7 @@ jobs:
 
       - name: Select proper label
         run: |
-          case true in
+          case "true" in
             "${{ steps.check_pr_labels_major.outputs.result")
               echo "CORRECT_LABEL=$(echo "major")" >> $GITHUB_ENV
               ;;
