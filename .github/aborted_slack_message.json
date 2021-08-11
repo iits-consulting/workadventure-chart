@@ -3,7 +3,6 @@
     {
       "fallback": "Required plain-text summary of the attachment.",
       "color": "#828282",
-      "pretext": "New version of your helm chart release aborted",
       "author_name": "replaceme_1",
       "author_link": "replaceme_2",
       "title": "GitHub Action output",
