@@ -20,112 +20,120 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Get PR info
-        id: pr_info
-        uses: actions-ecosystem/action-get-merged-pull-request@v1.0.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Get PR info
+#        id: pr_info
+#        uses: actions-ecosystem/action-get-merged-pull-request@v1.0.1
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: echo ${{ steps.pr_info.outputs.labels }}
-      - name: Get Previous tag
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: Check PR labels action step
+        id: check_pr_labels
+        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
         with:
-          fallback: 1.0.0
-      - name: Put new version to the ENV
-        run: |
-          t=$(echo "${{ steps.previoustag.outputs.tag }}" | cut -d- -f1)
-          echo "CURRENT_VERSION=`echo ${t}`" >> $GITHUB_ENV
-      - name: Calculate new version
-        uses: actions-ecosystem/action-bump-semver@v1
-        id: bump_semver
-        with:
-          current_version: ${{ env.CURRENT_VERSION }}
-          level: ${{ steps.pr_info.outputs.labels }}
-      - name: Find and replace version in Chart.yaml
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: "version:.*"
-          replace: "version: ${{ steps.bump_semver.outputs.new_version }}"
-          include: Chart.yaml
-      - name: Commit and push changes
-        uses: EndBug/add-and-commit@v7
-        with:
-          add: Chart.yaml
-          message: "[Auto-update] version updated"
-          tag: ${{ steps.bump_semver.outputs.new_version }}
-      - name: Bump version and push tag
-        uses: ChloePlanet/github-tag-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_TAG: ${{ steps.bump_semver.outputs.new_version }}
-      - name: Put variables to the outputs
-        id: sha_and_tag
-        run: |
-          sha_new=$(git rev-parse HEAD)
-          echo $sha_new
-          echo "::set-output name=sha::$sha_new"
-          echo "::set-output name=tag::${{ steps.bump_semver.outputs.new_version }}"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["major", "minor", "patch"]'
+      - name: See result
+        run: echo "${{ steps.check_pr_labels.outputs.result }}"
 
-    outputs:
-      new_sha: ${{ steps.sha_and_tag.outputs.sha }}
-      new_tag: ${{ steps.sha_and_tag.outputs.tag }}
-
-  make-external-pr:
-    needs: [release-stable]
-    name: Release stable chart to the ACR
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ needs.release-stable.outputs.new_sha }}
-          fetch-depth: 0
-      - name: Install helm
-        uses: Azure/setup-helm@v1.1
-      - name: Login to ACR using helm
-        run: |
-          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
-      - name: Save helm chart to locally
-        run: |
-          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.release-stable.outputs.new_tag }}
-      - name: Publish chart to the ACR
-        run: |
-          helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.release-stable.outputs.new_tag }}
-
-      - name: Notify slack success
-        if: ${{ success() }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: iits-consulting/slack-action@master
-        with:
-          channel_id: "C02AJKXC8UT"
-          payload_file: ".github/success_slack_message.json"
-          replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "https://google.com"
-          replaceme_3: "https://google.com"
-          replaceme_4: ${{ needs.release-stable.outputs.new_tag }}
-      - name: Notify slack failed
-        if: ${{ failure() }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: iits-consulting/slack-action@master
-        with:
-          channel_id: "C02AJKXC8UT"
-          payload_file: ".github/failed_slack_message.json"
-          replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "https://google.com"
-          replaceme_3: "https://google.com"
-          replaceme_4: ${{ needs.release-stable.outputs.new_tag }}
-      - name: Notify slack aborted
-        if: ${{ cancelled() }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: iits-consulting/slack-action@master
-        with:
-          channel_id: "C02AJKXC8UT"
-          payload_file: ".github/aborted_slack_message.json"
-          replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "https://google.com"
-          replaceme_3: "https://google.com"
-          replaceme_4: ${{ needs.release-stable.outputs.new_tag }}
+#      - name: Get Previous tag
+#        id: previoustag
+#        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+#        with:
+#          fallback: 1.0.0
+#      - name: Put new version to the ENV
+#        run: |
+#          t=$(echo "${{ steps.previoustag.outputs.tag }}" | cut -d- -f1)
+#          echo "CURRENT_VERSION=`echo ${t}`" >> $GITHUB_ENV
+#      - name: Calculate new version
+#        uses: actions-ecosystem/action-bump-semver@v1
+#        id: bump_semver
+#        with:
+#          current_version: ${{ env.CURRENT_VERSION }}
+#          level: ${{ steps.pr_info.outputs.labels }}
+#      - name: Find and replace version in Chart.yaml
+#        uses: jacobtomlinson/gha-find-replace@master
+#        with:
+#          find: "version:.*"
+#          replace: "version: ${{ steps.bump_semver.outputs.new_version }}"
+#          include: Chart.yaml
+#      - name: Commit and push changes
+#        uses: EndBug/add-and-commit@v7
+#        with:
+#          add: Chart.yaml
+#          message: "[Auto-update] version updated"
+#          tag: ${{ steps.bump_semver.outputs.new_version }}
+#      - name: Bump version and push tag
+#        uses: ChloePlanet/github-tag-action@master
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          CUSTOM_TAG: ${{ steps.bump_semver.outputs.new_version }}
+#      - name: Put variables to the outputs
+#        id: sha_and_tag
+#        run: |
+#          sha_new=$(git rev-parse HEAD)
+#          echo $sha_new
+#          echo "::set-output name=sha::$sha_new"
+#          echo "::set-output name=tag::${{ steps.bump_semver.outputs.new_version }}"
+#
+#    outputs:
+#      new_sha: ${{ steps.sha_and_tag.outputs.sha }}
+#      new_tag: ${{ steps.sha_and_tag.outputs.tag }}
+#
+#  make-external-pr:
+#    needs: [release-stable]
+#    name: Release stable chart to the ACR
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          ref: ${{ needs.release-stable.outputs.new_sha }}
+#          fetch-depth: 0
+#      - name: Install helm
+#        uses: Azure/setup-helm@v1.1
+#      - name: Login to ACR using helm
+#        run: |
+#          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
+#      - name: Save helm chart to locally
+#        run: |
+#          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.release-stable.outputs.new_tag }}
+#      - name: Publish chart to the ACR
+#        run: |
+#          helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.release-stable.outputs.new_tag }}
+#
+#      - name: Notify slack success
+#        if: ${{ success() }}
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+#        uses: iits-consulting/slack-action@master
+#        with:
+#          channel_id: "C02AJKXC8UT"
+#          payload_file: ".github/success_slack_message.json"
+#          replaceme_1: ${{ github.event.repository.name }}
+#          replaceme_2: "https://google.com"
+#          replaceme_3: "https://google.com"
+#          replaceme_4: ${{ needs.release-stable.outputs.new_tag }}
+#      - name: Notify slack failed
+#        if: ${{ failure() }}
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+#        uses: iits-consulting/slack-action@master
+#        with:
+#          channel_id: "C02AJKXC8UT"
+#          payload_file: ".github/failed_slack_message.json"
+#          replaceme_1: ${{ github.event.repository.name }}
+#          replaceme_2: "https://google.com"
+#          replaceme_3: "https://google.com"
+#          replaceme_4: ${{ needs.release-stable.outputs.new_tag }}
+#      - name: Notify slack aborted
+#        if: ${{ cancelled() }}
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+#        uses: iits-consulting/slack-action@master
+#        with:
+#          channel_id: "C02AJKXC8UT"
+#          payload_file: ".github/aborted_slack_message.json"
+#          replaceme_1: ${{ github.event.repository.name }}
+#          replaceme_2: "https://google.com"
+#          replaceme_3: "https://google.com"
+#          replaceme_4: ${{ needs.release-stable.outputs.new_tag }}
