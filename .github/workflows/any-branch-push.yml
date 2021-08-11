@@ -24,8 +24,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: TEST env
-        run: env
       - name: Set variables and outputs
         id: identify
         run: |
@@ -64,7 +62,7 @@ jobs:
       new_sha: ${{ steps.sha.outputs.sha }}
       new_tag: ${{ steps.newtag.outputs.git_new_tag }}
 
-  make-external-pr:
+  release:
     needs: [lint]
     name: Release chart to the ACR
     runs-on: ubuntu-latest
@@ -86,8 +84,8 @@ jobs:
           channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/success_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}"
-          replaceme_3: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
+          replaceme_2: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}
+          replaceme_3: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
           replaceme_4: ${{ needs.lint.outputs.new_tag }}
       - name: Notify slack failed
         if: ${{ failure() }}
@@ -98,8 +96,8 @@ jobs:
           channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/failed_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}"
-          replaceme_3: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
+          replaceme_2: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}
+          replaceme_3: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
           replaceme_4: ${{ needs.lint.outputs.new_tag }}
       - name: Notify slack aborted
         if: ${{ cancelled() }}
@@ -110,6 +108,6 @@ jobs:
           channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/aborted_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}"
-          replaceme_3: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
+          replaceme_2: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}
+          replaceme_3: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
           replaceme_4: ${{ needs.lint.outputs.new_tag }}

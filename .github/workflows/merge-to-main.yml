@@ -12,7 +12,7 @@ env:
   SLACK_CHANNEL_ID: "C02AJKXC8UT"
 
 jobs:
-  release-stable:
+  prepare-stable:
     name: Enroll new chart version
     runs-on: ubuntu-latest
     steps:
@@ -98,15 +98,15 @@ jobs:
       new_sha: ${{ steps.sha_and_tag.outputs.sha }}
       new_tag: ${{ steps.sha_and_tag.outputs.tag }}
 
-  make-external-pr:
-    needs: [release-stable]
+  release:
+    needs: [prepare-stable]
     name: Release stable chart to the ACR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.release-stable.outputs.new_sha }}
+          ref: ${{ needs.prepare-stable.outputs.new_sha }}
           fetch-depth: 0
       - name: Install helm
         uses: Azure/setup-helm@v1.1
@@ -115,10 +115,10 @@ jobs:
           echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
       - name: Save helm chart to locally
         run: |
-          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.release-stable.outputs.new_tag }}
+          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.prepare-stable.outputs.new_tag }}
       - name: Publish chart to the ACR
         run: |
-          helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.release-stable.outputs.new_tag }}
+          helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.prepare-stable.outputs.new_tag }}
 
       - name: Notify slack success
         if: ${{ success() }}
@@ -129,9 +129,9 @@ jobs:
           channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/success_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}"
-          replaceme_3: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
-          replaceme_4: ${{ needs.release-stable.outputs.new_tag }}
+          replaceme_2: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}
+          replaceme_3: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
+          replaceme_4: ${{ needs.prepare-stable.outputs.new_tag }}
       - name: Notify slack failed
         if: ${{ failure() }}
         env:
@@ -141,9 +141,9 @@ jobs:
           channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/failed_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}"
-          replaceme_3: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
-          replaceme_4: ${{ needs.release-stable.outputs.new_tag }}
+          replaceme_2: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}
+          replaceme_3: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
+          replaceme_4: ${{ needs.prepare-stable.outputs.new_tag }}
       - name: Notify slack aborted
         if: ${{ cancelled() }}
         env:
@@ -153,6 +153,6 @@ jobs:
           channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/aborted_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}"
-          replaceme_3: "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
-          replaceme_4: ${{ needs.release-stable.outputs.new_tag }}
+          replaceme_2: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}
+          replaceme_3: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}
+          replaceme_4: ${{ needs.prepare-stable.outputs.new_tag }}
