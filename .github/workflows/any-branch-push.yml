@@ -13,6 +13,7 @@ env:
   HELM_EXPERIMENTAL_OCI: 1
   ACR_NAME: iitsc
   ACR_USER_NAME: iits-releaser
+  SLACK_CHANNEL_ID: "C02AJKXC8UT"
 
 jobs:
   lint:
@@ -61,7 +62,7 @@ jobs:
       new_sha: ${{ steps.sha.outputs.sha }}
       new_tag: ${{ steps.newtag.outputs.git_new_tag }}
 
-  make-external-pr:
+  release:
     needs: [lint]
     name: Release chart to the ACR
     runs-on: ubuntu-latest
@@ -80,11 +81,11 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: iits-consulting/slack-action@master
         with:
-          channel_id: "C02AJKXC8UT"
+          channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/success_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "https://google.com"
-          replaceme_3: "https://google.com"
+          replaceme_2: "https://github.com/iits-consulting/workadventure/actions/runs/${{ env.GITHUB_RUN_ID }}"
+          replaceme_3: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
           replaceme_4: ${{ needs.lint.outputs.new_tag }}
       - name: Notify slack failed
         if: ${{ failure() }}
@@ -92,11 +93,11 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: iits-consulting/slack-action@master
         with:
-          channel_id: "C02AJKXC8UT"
+          channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/failed_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "https://google.com"
-          replaceme_3: "https://google.com"
+          replaceme_2: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY
+          replaceme_3: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
           replaceme_4: ${{ needs.lint.outputs.new_tag }}
       - name: Notify slack aborted
         if: ${{ cancelled() }}
@@ -104,9 +105,9 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: iits-consulting/slack-action@master
         with:
-          channel_id: "C02AJKXC8UT"
+          channel_id: ${{ env.SLACK_CHANNEL_ID }}
           payload_file: ".github/aborted_slack_message.json"
           replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "https://google.com"
-          replaceme_3: "https://google.com"
+          replaceme_2: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY
+          replaceme_3: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
           replaceme_4: ${{ needs.lint.outputs.new_tag }}
