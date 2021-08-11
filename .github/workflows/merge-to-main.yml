@@ -27,7 +27,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: TEST See result
-        run: print -r "${{ steps.pr_info.outputs }}"
+        run: |
+          python -c "type(${{ steps.pr_info.outputs }})"
+          python -c "print(${{ steps.pr_info.outputs }})"
 
 #      - name: Get Previous tag
 #        id: previoustag
