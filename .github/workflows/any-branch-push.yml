@@ -147,18 +147,23 @@ jobs:
 #      - name: TEST message templates
 #        run: cat ./github/success_slack_message.json
 
-      - name: TEST Notify slack success
-        if: ${{ success() }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: iits-consulting/slack-action@master
-        with:
-          channel_id: "C02AJKXC8UT"
-          payload_file: ".github/success_slack_message.json"
-          replaceme_1: ${{ github.event.repository.name }}
-          replaceme_2: "https://google.com"
-          replaceme_3: "https://google.com"
-          replaceme_4: ${{ needs.lint.outputs.new_tag }}
+      - name: TEST vars
+        run: |
+          echo ${{ github.event.repository.name }}
+          echo ${{ needs.lint.outputs.new_tag }}
+
+#      - name: TEST Notify slack success
+#        if: ${{ success() }}
+#        env:
+#          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+#        uses: iits-consulting/slack-action@master
+#        with:
+#          channel_id: "C02AJKXC8UT"
+#          payload_file: ".github/success_slack_message.json"
+#          replaceme_1: ${{ github.event.repository.name }}
+#          replaceme_2: "https://google.com"
+#          replaceme_3: "https://google.com"
+#          replaceme_4: ${{ needs.lint.outputs.new_tag }}
 
 #      - name: Notify slack success
 #        if: ${{ success() }}
