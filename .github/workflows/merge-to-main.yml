@@ -26,7 +26,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: echo ${{ steps.pr_info.outputs.labels }}
+      - run: echo \e ${{ steps.pr_info.outputs.labels }}
+      - run: echo -e ${{ steps.pr_info.outputs.labels }}
       - name: Get Previous tag
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
