@@ -27,7 +27,7 @@ jobs:
         uses: actions-ecosystem/action-bump-semver@v1
         id: bump_semver
         with:
-          current_version: ${{ env.CURRENT_VERSION }}
+          current_version: "1.0.0-wfsdfsdfsd"
           level: ${{ steps.pr_info.outputs.labels }}
 
       - run: echo ${{ steps.bump_semver.outputs.new_version }}
