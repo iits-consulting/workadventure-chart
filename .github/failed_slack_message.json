@@ -1,31 +1,25 @@
 {
-  "channel":"C02AJKXC8UT",
-  "color": "#c90202",
-  "blocks": [
+  "attachments": [
     {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "FAILED"
-      }
-    },
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "This is a section block with a button."
-      },
-      "accessory": {
-        "type": "button",
-        "text": {
-          "type": "plain_text",
-          "text": "Click Me",
-          "emoji": true
-        },
-        "value": "click_me_123",
-        "url": "https://google.com",
-        "action_id": "button-action"
-      }
+      "fallback": "Required plain-text summary of the attachment.",
+      "color": "#c90202",
+      "pretext": "New version of your helm chart release failed",
+      "author_name": "replaceme_1",
+      "author_link": "replaceme_2",
+      "title": "GitHub Action output",
+      "title_link": "replaceme_3",
+      "text": "New chart version release failed",
+      "fields": [
+        {
+          "title": "Version:",
+          "value": "replaceme_4",
+          "short": false
+        }
+      ],
+      "image_url": "http://my-website.com/path/to/image.jpg",
+      "thumb_url": "http://example.com/path/to/thumb.png",
+      "footer": "IITS internal",
+      "footer_icon": "https://iits-consulting.de/wp-content/uploads/2020/09/iits-logo-1.png"
     }
   ]
 }
