@@ -43,18 +43,6 @@ jobs:
             exit 1
           fi
           echo "::set-output name=git_new_tag::$ct-${{ env.GIT_SHA_SHORT }}"
-      - name: Find and replace version in Chart.yaml
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: "version:.*"
-          replace: "version: ${{ steps.newtag.outputs.git_new_tag }}"
-          include: Chart.yaml
-      - name: Commit and push changes
-        uses: EndBug/add-and-commit@v7
-        with:
-          add: Chart.yaml
-          message: "[Auto-update] version updated"
-          tag: ${{ steps.newtag.outputs.git_new_tag }}
       - name: Bump version and push tag
         uses: ChloePlanet/github-tag-action@master
         env:
@@ -73,27 +61,6 @@ jobs:
       new_sha: ${{ steps.sha.outputs.sha }}
       new_tag: ${{ steps.newtag.outputs.git_new_tag }}
 
-#  make-local-pr:
-#    needs: [lint]
-#    name: Make/Update local PR
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#        with:
-#          fetch-depth: 0
-#      - name: Inject slug/short variables
-#        uses: rlespinasse/github-slug-action@v3.x
-#      - name: Make/Update local PR
-#        uses: repo-sync/pull-request@v2
-#        with:
-#          destination_branch: "main"
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          pr_title: "Pulling ${{ env.GITHUB_EVENT_REF_SLUG }} into main"
-#          pr_template: ".github/pull_request_template.md"
-#          pr_reviewer: "wei,worker"
-#          pr_label: "auto-pr"
-
   make-external-pr:
     needs: [lint]
     name: Release chart to the ACR
@@ -105,15 +72,41 @@ jobs:
           ref: ${{ needs.lint.outputs.new_sha }}
           fetch-depth: 0
       - name: Setting branch name variable
-        run: echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
-      - name: Install helm
-        uses: Azure/setup-helm@v1.1
-      - name: Login to the ACR using helm
         run: |
-          echo ${{ secrets.ACR_RELEASER_TOKEN }} | helm registry login ${{ env.ACR_NAME }}.azurecr.io --username ${{ env.ACR_USER_NAME }} --password-stdin
-      - name: Save helm chart to locally
-        run: |
-          helm chart save . ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
-      - name: Publish chart to the ACR
-        run: |
-          helm chart push ${{ env.ACR_NAME }}.azurecr.io/charts/${{ github.event.repository.name }}:${{ needs.lint.outputs.new_tag }}
+          echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
+      - name: Notify slack success
+        if: ${{ success() }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: iits-consulting/slack-action@master
+        with:
+          channel_id: "C02AJKXC8UT"
+          payload_file: ".github/success_slack_message.json"
+          replaceme_1: ${{ github.event.repository.name }}
+          replaceme_2: "https://google.com"
+          replaceme_3: "https://google.com"
+          replaceme_4: ${{ needs.lint.outputs.new_tag }}
+      - name: Notify slack failed
+        if: ${{ failure() }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: iits-consulting/slack-action@master
+        with:
+          channel_id: "C02AJKXC8UT"
+          payload_file: ".github/failed_slack_message.json"
+          replaceme_1: ${{ github.event.repository.name }}
+          replaceme_2: "https://google.com"
+          replaceme_3: "https://google.com"
+          replaceme_4: ${{ needs.lint.outputs.new_tag }}
+      - name: Notify slack aborted
+        if: ${{ cancelled() }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: iits-consulting/slack-action@master
+        with:
+          channel_id: "C02AJKXC8UT"
+          payload_file: ".github/aborted_slack_message.json"
+          replaceme_1: ${{ github.event.repository.name }}
+          replaceme_2: "https://google.com"
+          replaceme_3: "https://google.com"
+          replaceme_4: ${{ needs.lint.outputs.new_tag }}
