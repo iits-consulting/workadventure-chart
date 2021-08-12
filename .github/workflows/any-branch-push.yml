@@ -75,7 +75,7 @@ jobs:
       - name: Setting branch name variable
         run: |
           echo "BRANCH_NAME=$(echo "${GITHUB_REF##*/}")" >> $GITHUB_ENV
-      - run: echo "${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
+      - run: echo "${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}/actions/runs/${{ GITHUB_RUN_ID }}"
 #      - name: Notify slack success
 #        if: ${{ success() }}
 #        env:
