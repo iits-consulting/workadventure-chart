@@ -3,11 +3,11 @@
     {
       "fallback": "Required plain-text summary of the attachment.",
       "color": "#36a64f",
+      "pretext": "New chart version released",
       "author_name": "replaceme_1",
       "author_link": "replaceme_2",
       "title": "GitHub Action output",
       "title_link": "replaceme_3",
-      "text": "New chart version released",
       "fields": [
         {
           "title": "Version:",
